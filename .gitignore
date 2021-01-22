@@ -1,0 +1,6 @@
+.idea
+.DS_Store
+
+./docker/db/.env
+
+./docker/front/config/.env.development
