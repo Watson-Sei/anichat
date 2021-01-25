@@ -3,7 +3,11 @@
     <textarea v-model="message"></textarea>
     <br/>
     <button v-on:click="send">送信</button>
-    <p>message: {{ messages }}</p>
+    <ul>
+      <li v-for="(message, index) in messages" :key="index">
+        {{ message }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -20,19 +24,19 @@ export default {
       messages: []
     }
   },
-  mounted: function () {
-    this.socket.onmessage = function (event) {
-      console.log("websocket.onmessage()")
-
-      if (event && event.data) {
-        console.log(event.data)
-        this.messages.push(event.data.string)
-      }
+  mounted() {
+    this.socket.onmessage = (event) => {
+      console.log(typeof event.data)
+      this.messages.push(event.data)
+      console.log(this.messages)
     }
   },
   methods: {
     send: function () {
       this.socket.send(this.message)
+    },
+    add: function (msg) {
+      this.messages.push(msg)
     }
   }
 }

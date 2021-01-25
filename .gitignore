@@ -4,3 +4,5 @@
 ./docker/db/.env
 
 ./docker/front/config/.env.development
+
+docker/db/data
