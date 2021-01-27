@@ -2,10 +2,10 @@
   <div>
     <textarea v-model="message"></textarea>
     <br/>
-    <button v-on:click="send">送信</button>
+    <button v-on:click="submit">送信</button>
     <ul>
       <li v-for="(message, index) in messages" :key="index">
-        {{ message }}
+        {{ message.name }} => {{ message.message }}
       </li>
     </ul>
   </div>
@@ -21,23 +21,42 @@ export default {
       // クライアントから送る値
       message: '',
       // サーバから受け取る値
-      messages: []
+      messages: [],
+      // Token
+      IAM: {
+        token: null,
+        name: null,
+        is_join: false
+      }
     }
   },
   mounted() {
+    // メッセージの更新があれば受け取る
     this.socket.onmessage = (event) => {
-      console.log(typeof event.data)
-      this.messages.push(event.data)
-      console.log(this.messages)
+      // json
+      let response = JSON.parse(event.data)
+      if (response.event === "token") {
+        console.log(response.token)
+        this.IAM.token = response.token
+      } else if (response.event === "message-post") {
+        console.log(response.message)
+        this.messages.push(response.message)
+      }
     }
   },
   methods: {
-    send: function () {
-      this.socket.send(this.message)
+    // 送信ボタン関数
+    submit: function () {
+      // 存在するか１文字以上存在するかを確認 all true
+      if (this.message && this.message != "") {
+        let obj = { event: 'post', token: this.IAM.token, message: this.message}
+        this.socket.send(JSON.stringify(obj))
+        this.message = ""
+      } else {
+        // なければ理由を送信
+        console.log("Empty messages cannot be sent.")
+      }
     },
-    add: function (msg) {
-      this.messages.push(msg)
-    }
   }
 }
 </script>
