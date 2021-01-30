@@ -7,6 +7,8 @@ import (
 	"log"
 )
 
+const SECRETKEY string = "%j0r*(h&@b$yl4^1$me0+fyautn(3xyi8#ena@z-6i!^r_o=a&"
+
 func main()  {
 
 	engine := html.New("./templates", ".html")
@@ -52,7 +54,7 @@ func main()  {
 			}
 
 			if messageType == websocket.TextMessage {
-				m := message{msg, s.room}
+				m := message{c,msg, s.room}
 				h.broadcast <- m
 			} else {
 				log.Println("websocket message received of type", messageType)

@@ -11,5 +11,6 @@ require (
 	github.com/klauspost/compress v1.11.7 // indirect
 	github.com/savsgio/gotils v0.0.0-20210120114113-f9d780dcbd93 // indirect
 	github.com/valyala/fasthttp v1.19.0 // indirect
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/sys v0.0.0-20210119212857-b64e53b001e4 // indirect
 )
