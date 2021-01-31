@@ -6,6 +6,8 @@
 
 <script>
 export default {
+  // layout: 'protected',
+  // middleware: 'authenticated',
   name: "index"
 }
 </script>
