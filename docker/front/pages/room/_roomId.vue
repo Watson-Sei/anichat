@@ -58,7 +58,6 @@ export default {
       if (response.event === "token") {
         console.log("tokenを受け取りました")
         this.IAM.token = response.token
-        this.register()
       }
       // ルームの誰かが送信した場合に処理されます
       if (response.event === "member-post") {
@@ -69,10 +68,6 @@ export default {
   },
   methods: {
     // ルームにユーザー情報を渡す
-    register: function () {
-      const obj = {event: 'join', token: this.IAM.token, name: this.user.name}
-      this.socket.send(JSON.stringify(obj))
-    },
     // 送信ボタン関数
     submit: function () {
       // 接続は維持されているか、チャット内容は空で実行されて無いかなどチェックをして送信をします。
