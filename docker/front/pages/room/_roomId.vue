@@ -3,13 +3,15 @@
     <h1>{{ $route.params.roomId }}ルームへようこそ</h1>
     <div>
       <textarea v-model="message"></textarea>
-      <br/>
-      <button v-on:click="submit">送信</button>
+      <button id="post-button" v-on:click="submit">送信</button>
+<!--      <button v-bind:disabled="isQuit" id="quit-button" v-on:click="quit"></button>-->
+      <!-- 発言ログ -->
       <ul>
         <li v-for="(data, index) in messages" :key="index">
-          ? => {{ data.message }}
+          <span v-bind:class="data.class"><span class="name">{{ data.name }}</span>> {{ data.text }}</span>
         </li>
       </ul>
+      <!-- メンバー一覧 -->
     </div>
   </div>
 </template>
@@ -39,9 +41,11 @@ export default {
         name: null,
         is_join: false
       },
+      // メンバーリスト
       Member: {
         0: "マスター"
       },
+      isQuit: false
     }
   },
   mounted() {
@@ -52,18 +56,48 @@ export default {
     // メッセージの更新があれば受け取る
     this.socket.onmessage = (event) => {
       // 受け取った文字列をjsonにparseします
-      const response = JSON.parse(event.data)
-      console.log(response)
+      const data = JSON.parse(event.data)
+      console.log(data)
       // イベント処理
       // トークンを受け取った際の処理
-      if (response.event === "token") {
+      if (data.event === "token") {
         console.log("tokenを受け取りました")
-        this.IAM.token = response.token
+        this.IAM.token = data.token
+        this.IAM.name = this.user.name
+
+        // event:join送信
+        this.socket.send(JSON.stringify({
+          event: "join",
+          token: this.IAM.token,
+          name: this.IAM.name
+        }))
+      }
+      // 入室結果が返ってきた
+      if ( data.event === "join-result") {
+        // 正常に入室できた
+        if( data.status ){
+          // 入室フラグを立てる
+          this.IAM.is_join = true;
+
+          // すでにログイン中のメンバー一覧を反映
+        } else {
+          alert("入室できませんでした")
+        }
+      }
+      // 誰かが入室した
+      if ( data.event === "member-join") {
+        if( this.IAM.is_join ){
+          this.addMessageFromMaster(`${data.name}さんが入室しました`);
+          // addMemberList
+        }
       }
       // ルームの誰かが送信した場合に処理されます
-      if (response.event === "member-post") {
+      if (data.event === "member-post") {
         console.log("メッセージを受信しました")
-        this.messages.push({name: response.name, message: response.message})
+        if( this.IAM.is_join ){
+          const is_me = (data.token === this.IAM.token);
+          this.addMessage(data, is_me);
+        }
       }
     }
   },
@@ -82,6 +116,20 @@ export default {
       } else {
         return false;
       }
+    },
+    addMessage(msg, is_me=false){
+      const name = this.Member[msg.token]
+
+      if( msg.token === 0 ){
+        this.messages.push({class: "msg-master", name: name, text: msg.text})
+      } else if( is_me ) {
+        this.messages.push({class: "msg-me", name: name, text: msg.text})
+      } else {
+        this.messages.push({class: "msg-member", name: name, text: msg.text})
+      }
+    },
+    addMessageFromMaster(msg){
+      this.addMessage({token: 0, text: msg})
     }
   }
 }
