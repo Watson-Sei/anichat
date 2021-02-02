@@ -18,7 +18,14 @@
 import { w3cwebsocket } from 'websocket'
 const W3CWebSocket = w3cwebsocket
 export default {
+  // layout: 'protected',
+  middleware: 'authenticated',
   name: "roomId",
+  computed: {
+    user(state) {
+      return this.$store.getters['modules/user/user']
+    }
+  },
   data() {
     return {
       socket: new W3CWebSocket(`ws://localhost/api/ws/${this.$route.params.roomId}`),
@@ -31,7 +38,10 @@ export default {
         token: null,
         name: null,
         is_join: false
-      }
+      },
+      Member: {
+        0: "マスター"
+      },
     }
   },
   mounted() {
@@ -53,11 +63,12 @@ export default {
       // ルームの誰かが送信した場合に処理されます
       if (response.event === "member-post") {
         console.log("メッセージを受信しました")
-        this.messages.push({message: response.message})
+        this.messages.push({name: response.name, message: response.message})
       }
     }
   },
   methods: {
+    // ルームにユーザー情報を渡す
     // 送信ボタン関数
     submit: function () {
       // 接続は維持されているか、チャット内容は空で実行されて無いかなどチェックをして送信をします。
@@ -65,7 +76,7 @@ export default {
         return false;
       }
       if (this.message && this.message != "") {
-        const obj = {event: 'post', token: this.IAM.token, message: this.message}
+        const obj = {event: 'post', token: this.IAM.token, name: this.user.name, message: this.message}
         this.socket.send(JSON.stringify(obj))
         this.message = ""
       } else {

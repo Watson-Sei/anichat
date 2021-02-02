@@ -6,9 +6,9 @@ import (
 	"strconv"
 )
 
-func MakeToken(id int, secretkey string) string {
+func MakeToken(id int, SecretKey string) string {
 	SID := strconv.Itoa(id)
-	str := secretkey + SID
+	str := SecretKey + SID
 	hash, err := bcrypt.GenerateFromPassword([]byte(str), bcrypt.DefaultCost)
 	if err != nil {
 		log.Println(err)

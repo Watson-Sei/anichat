@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/gofiber/websocket/v2"
 	"github.com/Watson-Sei/anichat/api_v1/plugin"
+	"github.com/gofiber/websocket/v2"
 	"log"
 )
 
@@ -49,15 +49,16 @@ func (h *hub) run() {
 			h.rooms[s.room][s.conn] = true
 			log.Println("connection registered")
 
-			// create token and send token
-			token := plugin.MakeToken(MemberCount, SECRETKEY)
+			// create token
+			token := plugin.MakeToken(MemberCount, SecretKey)
 
-			// Append User List
+			// add Member
 			Member[s.room] = make(map[*websocket.Conn]map[string]interface{})
 			Member[s.room][s.conn] = make(map[string]interface{})
 			Member[s.room][s.conn]["token"] = token
 			Member[s.room][s.conn]["name"] = nil
 			Member[s.room][s.conn]["count"] = MemberCount
+
 			// Member count ++
 			MemberCount += 1
 
@@ -69,12 +70,13 @@ func (h *hub) run() {
 				log.Println(err)
 			}
 
-			if err = s.conn.WriteMessage(websocket.TextMessage, bytes); err != nil {
+			if s.conn.WriteMessage(websocket.TextMessage, bytes); err != nil {
 				log.Println("write error:", err)
 
-				h.unregister <- s
-				s.conn.WriteMessage(websocket.TextMessage, []byte{})
-				s.conn.Close()
+				delete(connections, s.conn)
+				if len(connections) == 0 {
+					delete(h.rooms, s.room)
+				}
 			}
 
 		case s := <- h.unregister:
@@ -88,25 +90,24 @@ func (h *hub) run() {
 
 		case m := <- h.broadcast:
 			log.Println("message received:", string(m.data))
+			connections := h.rooms[m.room]
 
 			var dataMap map[string]interface{}
 			if err := json.Unmarshal(m.data, &dataMap); err != nil {
 				log.Println("error unmarshal: ", err)
 			}
 
-			// event: post (送信があった場合ブロードキャストします）
 			if dataMap["event"] == "post" {
 
 				bytes, err := json.Marshal(map[string]interface{}{
 					"event": "member-post",
-					"message": dataMap["message"],
 					"token": dataMap["token"],
+					"name": dataMap["name"],
+					"message": dataMap["message"],
 				})
 				if err != nil {
 					log.Println(err)
 				}
-
-				connections := h.rooms[m.room]
 
 				for connection := range connections {
 					if err = connection.WriteMessage(websocket.TextMessage, bytes); err != nil {
@@ -118,6 +119,8 @@ func (h *hub) run() {
 						}
 					}
 				}
+
+				log.Println("member-postされました")
 			}
 		}
 	}
