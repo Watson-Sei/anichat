@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <div class="hello">
-      <h1>{{ msg }}</h1>
-      <h2>Essential Links</h2>
+      <h1>Welcome to {{ user.name }}🎉</h1>
       <button @click="signOut">Sign out</button>
     </div>
   </div>
@@ -12,9 +11,9 @@ import Cookies from 'js-cookie'
 import firebase from '~/plugins/firebase'
 export default {
   middleware: 'authenticated',
-  data() {
-    return {
-      msg: 'Welcome to Your Vue.js App',
+  computed: {
+    user(state) {
+      return this.$store.getters['modules/user/user'];
     }
   },
   methods: {

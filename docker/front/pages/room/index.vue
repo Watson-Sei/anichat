@@ -7,7 +7,7 @@
 <script>
 export default {
   // layout: 'protected',
-  // middleware: 'authenticated',
+  middleware: 'authenticated',
   name: "index"
 }
 </script>
