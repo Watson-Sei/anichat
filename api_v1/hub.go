@@ -32,7 +32,9 @@ var h = hub{
 	unregister: make(chan subscription),
 }
 
+// room -> connection -> token, name etc...
 var Member = make(map[string]map[*websocket.Conn]map[string]interface{})
+
 var MemberCount int = 1
 
 func (h *hub) run() {
@@ -57,9 +59,9 @@ func (h *hub) run() {
 			Member[s.room][s.conn]["name"] = nil
 			Member[s.room][s.conn]["count"] = MemberCount
 
+			// Member count ++
 			MemberCount += 1
 
-			// Sends a token to the sender.
 			bytes, err := json.Marshal(map[string]interface{}{
 				"event": "token",
 				"token": token,
@@ -121,7 +123,5 @@ func (h *hub) run() {
 				log.Println("member-postされました")
 			}
 		}
-
-
 	}
 }

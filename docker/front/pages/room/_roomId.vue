@@ -6,8 +6,8 @@
       <br/>
       <button v-on:click="submit">送信</button>
       <ul>
-        <li v-for="(message, index) in messages" :key="index">
-          {{ message.name }} => {{ message.message }}
+        <li v-for="(data, index) in messages" :key="index">
+          ? => {{ data.message }}
         </li>
       </ul>
     </div>
@@ -53,6 +53,7 @@ export default {
     this.socket.onmessage = (event) => {
       // 受け取った文字列をjsonにparseします
       const response = JSON.parse(event.data)
+      console.log(response)
       // イベント処理
       // トークンを受け取った際の処理
       if (response.event === "token") {
