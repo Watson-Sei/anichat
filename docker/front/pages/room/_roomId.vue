@@ -8,7 +8,7 @@
       <!-- 発言ログ -->
       <ul>
         <li v-for="(data, index) in messages" :key="index">
-          <span v-bind:class="data.class"><span class="name">{{ data.name }}</span>> {{ data.text }}</span>
+          <span v-bind:class="data.class"><span class="name">{{ data.name }}</span>> {{ data.message }}</span>
         </li>
       </ul>
       <!-- メンバー一覧 -->
@@ -66,6 +66,7 @@ export default {
         this.IAM.name = this.user.name
 
         // event:join送信
+        console.log("join発火")
         this.socket.send(JSON.stringify({
           event: "join",
           token: this.IAM.token,
@@ -80,6 +81,15 @@ export default {
           this.IAM.is_join = true;
 
           // すでにログイン中のメンバー一覧を反映
+          console.log("すでにログインしているユーザー:", data.list)
+          if( data.list !== null ){
+            for(let i=0; i<data.list.length; i++){
+              const cur = data.list[i];
+              if( ! (cur.token in this.Member) ){
+                this.addMemberList(cur.token, cur.name)
+              }
+            }
+          }
         } else {
           alert("入室できませんでした")
         }
@@ -88,12 +98,13 @@ export default {
       if ( data.event === "member-join") {
         if( this.IAM.is_join ){
           this.addMessageFromMaster(`${data.name}さんが入室しました`);
-          // addMemberList
+          this.addMemberList(data.token, data.name)
         }
       }
       // ルームの誰かが送信した場合に処理されます
       if (data.event === "member-post") {
         console.log("メッセージを受信しました")
+        console.log(data)
         if( this.IAM.is_join ){
           const is_me = (data.token === this.IAM.token);
           this.addMessage(data, is_me);
@@ -110,7 +121,7 @@ export default {
         return false;
       }
       if (this.message && this.message != "") {
-        const obj = {event: 'post', token: this.IAM.token, name: this.user.name, message: this.message}
+        const obj = {event: 'post', token: this.IAM.token, message: this.message}
         this.socket.send(JSON.stringify(obj))
         this.message = ""
       } else {
@@ -121,15 +132,20 @@ export default {
       const name = this.Member[msg.token]
 
       if( msg.token === 0 ){
-        this.messages.push({class: "msg-master", name: name, text: msg.text})
+        this.messages.push({class: "msg-master", name: name, message: msg.message})
       } else if( is_me ) {
-        this.messages.push({class: "msg-me", name: name, text: msg.text})
+        this.messages.push({class: "msg-me", name: name, message: msg.message})
       } else {
-        this.messages.push({class: "msg-member", name: name, text: msg.text})
+        this.messages.push({class: "msg-member", name: name, message: msg.message})
       }
     },
     addMessageFromMaster(msg){
-      this.addMessage({token: 0, text: msg})
+      this.addMessage({token: 0, message: msg})
+    },
+    addMemberList(token, name){
+      // 内部変数に保存
+      this.Member[token] = name;
+      console.log("内部変数が保存されました", this.Member)
     }
   }
 }

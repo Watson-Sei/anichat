@@ -53,11 +53,18 @@ func (h *hub) run() {
 			token := plugin.MakeToken(MemberCount, SecretKey)
 
 			// add Member
-			Member[s.room] = make(map[*websocket.Conn]map[string]interface{})
-			Member[s.room][s.conn] = make(map[string]interface{})
-			Member[s.room][s.conn]["token"] = token
-			Member[s.room][s.conn]["name"] = nil
-			Member[s.room][s.conn]["count"] = MemberCount
+			if _, ok := Member[s.room]; ok {
+				Member[s.room][s.conn] = make(map[string]interface{})
+				Member[s.room][s.conn]["token"] = token
+				Member[s.room][s.conn]["name"] = nil
+				Member[s.room][s.conn]["count"] = MemberCount
+			} else {
+				Member[s.room] = make(map[*websocket.Conn]map[string]interface{})
+				Member[s.room][s.conn] = make(map[string]interface{})
+				Member[s.room][s.conn]["token"] = token
+				Member[s.room][s.conn]["name"] = nil
+				Member[s.room][s.conn]["count"] = MemberCount
+			}
 
 			// Member count ++
 			MemberCount += 1
@@ -97,38 +104,11 @@ func (h *hub) run() {
 				log.Println("error unmarshal: ", err)
 			}
 
-			if dataMap["event"] == "post" {
-
-				bytes, err := json.Marshal(map[string]interface{}{
-					"event": "member-post",
-					"token": dataMap["token"],
-					"name": dataMap["name"],
-					"message": dataMap["message"],
-				})
-				if err != nil {
-					log.Println(err)
-				}
-
-				for connection := range connections {
-					if err = connection.WriteMessage(websocket.TextMessage, bytes); err != nil {
-						log.Println("write error:", err)
-
-						delete(connections, connection)
-						if len(connections) == 0 {
-							delete(h.rooms, m.room)
-						}
-					}
-				}
-
-				log.Println("member-postされました")
-			}
-
 			if dataMap["event"] == "join" {
-				// トークンが正しければ
+				// token auth
 				if authToken(m.conn, m.room, dataMap["token"].(string)) {
-					// 入室OK + 現在の入室一覧を通知
+					// 入室OK + 現在の入室者一覧を通知
 					memberlist := getMemberList(m.room)
-
 					bytes, err := json.Marshal(map[string]interface{}{
 						"event": "join-result",
 						"status": true,
@@ -138,8 +118,8 @@ func (h *hub) run() {
 						log.Println(err)
 					}
 
-					if err = m.conn.WriteMessage(websocket.TextMessage, bytes); err != nil {
-						log.Println("write error: ", err)
+					if m.conn.WriteMessage(websocket.TextMessage, bytes); err != nil {
+						log.Println("write error:", err)
 
 						delete(connections, m.conn)
 						if len(connections) == 0 {
@@ -151,32 +131,36 @@ func (h *hub) run() {
 					Member[m.room][m.conn]["name"] = dataMap["name"]
 
 					// 入室通知
+					// 本人
 					dataMap["event"] = "member-join"
-					// 本人へ送信
 					bytes, err = json.Marshal(dataMap)
 					if err != nil {
 						log.Println(err)
 					}
+
 					if m.conn.WriteMessage(websocket.TextMessage, bytes); err != nil {
-						log.Println("write error: ", err)
+						log.Println("write error:", err)
 
 						delete(connections, m.conn)
 						if len(connections) == 0 {
 							delete(h.rooms, m.room)
 						}
 					}
-					// 本人以外へ送信
-					dataMap["token"] = Member[m.room][m.conn]["count"]
-					bytes, err = json.Marshal(dataMap)
+
+					// 他人
+					bytes, err = json.Marshal(map[string]interface{}{
+						"event": "member-join",
+						"name": dataMap["name"],
+						"token": Member[m.room][m.conn]["count"],
+					})
 					if err != nil {
 						log.Println(err)
 					}
+
 					for connection := range connections {
-						log.Println("順番接続:", connection)
-						if m.conn != connection {
-							log.Println("実行接続:", connection)
+						if connection != m.conn {
 							if connection.WriteMessage(websocket.TextMessage, bytes); err != nil {
-								log.Println(err)
+								log.Println("write error:", err)
 
 								delete(connections, connection)
 								if len(connections) == 0 {
@@ -186,8 +170,6 @@ func (h *hub) run() {
 						}
 					}
 				} else {
-					// トークンが誤っていた場合
-					// 本人にNG通知
 					bytes, err := json.Marshal(map[string]interface{}{
 						"event": "join-result",
 						"status": false,
@@ -197,7 +179,7 @@ func (h *hub) run() {
 					}
 
 					if err = m.conn.WriteMessage(websocket.TextMessage, bytes); err != nil {
-						log.Println("write error: ", err)
+						log.Println("write error:", err)
 
 						delete(connections, m.conn)
 						if len(connections) == 0 {
@@ -206,6 +188,50 @@ func (h *hub) run() {
 					}
 				}
 			}
+
+			if dataMap["event"] == "post" {
+				// 本人に通知
+				bytes, err := json.Marshal(map[string]interface{}{
+					"event": "member-post",
+					"token": dataMap["token"],
+					"message": dataMap["message"],
+				})
+				if err != nil {
+					log.Println(err)
+				}
+				if m.conn.WriteMessage(websocket.TextMessage, bytes); err != nil {
+					log.Println("write error: ", err)
+
+					delete(connections, m.conn)
+					if len(connections) == 0 {
+						delete(h.rooms, m.room)
+					}
+				}
+
+				// 本人以外に通知
+				bytes, err = json.Marshal(map[string]interface{}{
+					"event": "member-post",
+					"token": Member[m.room][m.conn]["count"],
+					"message": dataMap["message"],
+				})
+				if err != nil {
+					log.Println(err)
+				}
+
+				for connection := range connections {
+					if connection != m.conn {
+						if connection.WriteMessage(websocket.TextMessage, bytes); err != nil {
+							log.Println("write error:", err)
+
+							delete(connections, connection)
+							if len(connections) == 0 {
+								delete(h.rooms, m.room)
+							}
+						}
+					}
+				}
+			}
+
 		}
 	}
 }
@@ -222,8 +248,10 @@ func authToken(conn *websocket.Conn, room,token string) bool {
 
 func getMemberList(room string) []map[string]interface{} {
 	var list []map[string]interface{}
+	log.Println("cur - before: ", Member[room])
 	for key, _ := range Member[room] {
 		cur := Member[room][key]
+		log.Println("cur: ", cur)
 		if cur["name"] != nil {
 			list = append(list, map[string]interface{}{
 				"token": cur["count"],
