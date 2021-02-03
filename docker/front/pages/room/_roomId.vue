@@ -4,7 +4,7 @@
     <div>
       <textarea v-model="message"></textarea>
       <button id="post-button" v-on:click="submit">送信</button>
-<!--      <button v-bind:disabled="isQuit" id="quit-button" v-on:click="quit"></button>-->
+      <button v-bind:disabled="isQuit" id="quit-button" v-on:click="quit">退室</button>
       <!-- 発言ログ -->
       <ul>
         <li v-for="(data, index) in messages" :key="index">
@@ -110,6 +110,25 @@ export default {
           this.addMessage(data, is_me);
         }
       }
+      // 退室処理の結果が返ってきた
+      if (data.event === "quit-result") {
+        if( data.status ){
+          this.gotoSTEP1();
+        } else {
+          alert("退室できませんでした");
+        }
+
+        // ボタンを有効に戻す
+        this.isQuit = false
+      }
+      // 誰かが退室したら
+      if (data.event === "member-quit") {
+        if( this.IAM.is_join ){
+          const name = this.Member[data.token]
+          this.addMessageFromMaster(`${name}さんが退室しました`);
+          this.removeMemberList(data.token);
+        }
+      }
     }
   },
   methods: {
@@ -146,6 +165,36 @@ export default {
       // 内部変数に保存
       this.Member[token] = name;
       console.log("内部変数が保存されました", this.Member)
+    },
+    quit() {
+      if( confirm("本当に退室しますか？") ){
+        this.socket.send(JSON.stringify({
+          event: "quit",
+          token: this.IAM.token
+        }))
+
+        // ボタンを無効にする
+        this.isQuit = true
+      }
+    },
+    removeMemberList(token) {
+      // 内部変数から削除
+      delete this.Member[token];
+    },
+    gotoSTEP1() {
+      // 自分の情報を初期化
+      this.IAM.token = null;
+      this.IAM.name = null;
+      this.IAM.is_join = null;
+
+      //　メンバー一覧を初期化
+      for( let key in this.Member ){
+        if( key !== "0"){
+          delete this.Member[key];
+        }
+      }
+
+      this.$router.push("/room")
     }
   }
 }

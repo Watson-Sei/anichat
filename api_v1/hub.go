@@ -231,7 +231,68 @@ func (h *hub) run() {
 					}
 				}
 			}
+			// 退室
+			if dataMap["event"] == "quit" {
+				// トークンが正しければ
+				if authToken(m.conn, m.room, dataMap["token"].(string)) {
+					// 本人に通知
+					bytes, err := json.Marshal(map[string]interface{}{
+						"event": "quit-result",
+						"status": true,
+					})
+					if err != nil {
+						log.Println(err)
+					}
 
+					if err = m.conn.WriteMessage(websocket.TextMessage, bytes); err != nil {
+						log.Println("write error:", err)
+
+						delete(connections, m.conn)
+						if len(connections) == 0 {
+							delete(h.rooms, m.room)
+						}
+					}
+
+					// 本人以外
+					bytes, err = json.Marshal(map[string]interface{}{
+						"event": "member-quit",
+						"token": Member[m.room][m.conn]["count"],
+					})
+					for connection := range connections {
+						if connection != m.conn {
+							if err = connection.WriteMessage(websocket.TextMessage, bytes); err != nil {
+								log.Println("write error:", err)
+
+								delete(connections, connection)
+								if len(connections) == 0 {
+									delete(h.rooms, m.room)
+								}
+							}
+						}
+					}
+
+					// 削除
+					delete(Member[m.room], m.conn)
+				} else {
+					// 本人にNG通知
+					bytes, err := json.Marshal(map[string]interface{}{
+						"event": "quit-result",
+						"status": false,
+					})
+					if err != nil {
+						log.Println(err)
+					}
+
+					if err = m.conn.WriteMessage(websocket.TextMessage, bytes); err != nil {
+						log.Println("write error:", err)
+
+						delete(connections, m.conn)
+						if len(connections) == 0 {
+							delete(h.rooms, m.room)
+						}
+					}
+				}
+			}
 		}
 	}
 }
