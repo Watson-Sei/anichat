@@ -1,14 +1,12 @@
 <template>
   <div class="container">
     <div class="hello">
-      <h1>Welcome to {{ user.name }}🎉</h1>
-      <button @click="signOut">Sign out</button>
+      <h1 v-if="user">Welcome to {{ user.name }}🎉</h1>
+      <button @click="Logout">Sign out</button>
     </div>
   </div>
 </template>
 <script>
-import Cookies from 'js-cookie'
-import firebase from '~/plugins/firebase'
 export default {
   middleware: 'authenticated',
   computed: {
@@ -17,13 +15,10 @@ export default {
     }
   },
   methods: {
-    signOut() {
-      firebase.auth().signOut().then(() => {
-        // localStorage.removeItem('jwt')
-        Cookies.remove('access_token')
-        this.$router.push('/auth/signin')
-      })
-    },
+    async Logout() {
+      await this.$store.dispatch('modules/user/logout')
+      await this.$router.push("/auth/signin")
+    }
   }
 }
 </script>

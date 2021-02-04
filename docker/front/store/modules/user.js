@@ -34,6 +34,12 @@ export const actions = {
       uid: user.uid
     }
 
+    firebaseApp.database().ref('users/' + user.uid).set({
+      name: user.displayName,
+      email: user.email,
+      avatar: user.photoURL,
+    })
+
     Cookies.set('access_token', token) // saving token in cookie for server rendering
     await dispatch('setUSER', userInfo)
     await dispatch('saveUID', userInfo.uid)
@@ -57,7 +63,6 @@ export const actions = {
 
   setUSER({commit}, user) {
     commit('setUSER', user)
-
   }
 
 }

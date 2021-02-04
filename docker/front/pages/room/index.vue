@@ -5,10 +5,11 @@
 </template>
 
 <script>
+import firebaseApp from '~/plugins/firebase'
 export default {
   // layout: 'protected',
   middleware: 'authenticated',
-  name: "index"
+  name: "index",
 }
 </script>
 
