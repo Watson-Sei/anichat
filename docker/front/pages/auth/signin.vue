@@ -23,6 +23,7 @@ export default {
       password: '',
     }
   },
+  middleware: ['handle-login-route'],
   computed: {
     ...mapGetters('modules/user', [
       'uid'
