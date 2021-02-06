@@ -13,4 +13,6 @@ RUN apk update \
   && go get -u github.com/pilu/fresh \
   && apk add mysql-client
 
+ENV GOOGLE_APPLICATION_CREDENTIALS="/go/src/api/firebase_adminsdk.json"
+
 EXPOSE 8080

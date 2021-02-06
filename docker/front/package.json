@@ -9,6 +9,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^5.13.0",
     "cookie-parser": "^1.4.5",
     "cookieparser": "^0.1.0",
     "core-js": "^3.6.5",

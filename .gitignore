@@ -6,3 +6,7 @@
 ./docker/front/config/
 
 docker/db/data
+
+api_v1/firebase_adminsdk.json
+
+api_v1/tmp

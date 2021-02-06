@@ -34,10 +34,11 @@ export const actions = {
       uid: user.uid
     }
 
-    firebaseApp.database().ref('users/' + user.uid).set({
+    await firebaseApp.database().ref('users/' + user.uid).set({
       name: user.displayName,
       email: user.email,
       avatar: user.photoURL,
+      uid: user.uid,
     })
 
     Cookies.set('access_token', token) // saving token in cookie for server rendering

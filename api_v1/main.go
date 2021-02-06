@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Watson-Sei/anichat/api_v1/middleware/firebase"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html"
 	"github.com/gofiber/websocket/v2"
@@ -15,6 +16,16 @@ func main()  {
 
 	app := fiber.New(fiber.Config{
 		Views: engine,
+	})
+
+	app.Use(firebase.Auth())
+
+	app.Get("/hello", func(c *fiber.Ctx) error {
+		log.Println("Call Hello Function")
+		c.Status(200).JSON(fiber.Map{
+			"message": "Hello👋!",
+		})
+		return nil
 	})
 
 	app.Get("/:id", func(c *fiber.Ctx) error {
