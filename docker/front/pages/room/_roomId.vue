@@ -25,7 +25,7 @@ export default {
   name: "roomId",
   computed: {
     user(state) {
-      return this.$store.getters['modules/user/user']
+      return this.$store.state.authUser
     }
   },
   data() {
@@ -53,6 +53,11 @@ export default {
     this.socket.onopen = (event) => {
       console.log("安全に接続しました")
     }
+    // 切断ハンドラ
+    this.socket.onclose = (event) => {
+      console.log("切断されました")
+      this.$router.push({path: "/room"})
+    }
     // メッセージの更新があれば受け取る
     this.socket.onmessage = (event) => {
       // 受け取った文字列をjsonにparseします
@@ -63,7 +68,7 @@ export default {
       if (data.event === "token") {
         console.log("tokenを受け取りました")
         this.IAM.token = data.token
-        this.IAM.name = this.user.name
+        this.IAM.name = this.user.displayName
 
         // event:join送信
         console.log("join発火")

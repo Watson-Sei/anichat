@@ -3,7 +3,7 @@
     <!-- sample code: https://codepen.io/eswarasai/pen/GZvJOE -->
     <div class="login-box">
       <h2 class="font-black">Social Login</h2>
-      <button @click="GoogleLogin" class="social-button" id="google-connect"> <span>Connect with Google</span></button>
+      <button @click="signInWithGoogle" class="social-button" id="google-connect"> <span>Connect with Google</span></button>
       <button href="#" class="social-button" id="twitter-connect"> <span>Connect with Twitter</span></button>
       <p class="text-xs pt-6">
         上記ボタンのクリックにより、<a href="#" class="underlined-part">利用規約</a> 及び<br/> <a href="#" class="underlined-part">個人情報の取り扱い</a> に関する要項に同意したものとします。
@@ -13,29 +13,15 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import firebase, {googleProvider} from '~/plugins/firebase'
+
 export default {
-  name: "signin",
-  data() {
-    return {
-      email: '',
-      password: '',
-    }
-  },
-  middleware: ['handle-login-route'],
-  computed: {
-    ...mapGetters('modules/user', [
-      'uid'
-    ])
-  },
+  layout: 'default',
+  middleware: 'handle-login-route',
   methods: {
-    ...mapActions("modules/user", [ 'login' ]),
-    // Google Login
-    async GoogleLogin() {
-      const { user } = await firebase.auth().signInWithPopup(googleProvider)
-      await this.login(user);
-      await this.$router.push('/')
+    async signInWithGoogle() {
+      const provider = new this.$fireModule.default.auth.GoogleAuthProvider();
+      const authData = await this.$fire.auth.signInWithPopup(provider)
+      console.log('成功しました')
     }
   }
 }

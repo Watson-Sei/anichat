@@ -1,16 +1,6 @@
 const enviroment = process.env.NODE_ENV
 require('dotenv').config({path: `config/.env.${enviroment}`})
-const {
-  API_URL,
-  API_URL_BROWSER,
-  BASE_URL,
-  apiKey,
-  databaseURL,
-  projectId,
-  messagingSenderId,
-  appId,
-  measurementId,
-} = process.env
+
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -31,7 +21,6 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    '~/plugins/firebase.js'
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -46,20 +35,51 @@ export default {
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
+    '@nuxtjs/dotenv',
+    '@nuxtjs/pwa',
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: process.env.apiKey,
+          authDomain: process.env.authDomain,
+          databaseURL: process.env.databaseURL,
+          projectId: process.env.projectId,
+          storageBucket: process.env.storageBucket,
+          messagingSenderId: process.env.messagingSenderId,
+          appId: process.env.appId,
+          measurementId: process.env.measurementId
+        },
+        services: {
+          auth: {
+            persistence: 'local',
+            initialize: {
+              onAuthStateChangedAction: 'onAuthStateChanged',
+            },
+            ssr: true
+          }
+        }
+      }
+    ]
   ],
+
+  pwa: {
+    meta: false,
+    icon: false,
+
+    workbox: {
+      importScripts: [
+        '/firebase-auth-sw.js'
+      ],
+
+      dev: true
+    }
+  },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
   },
-  env: {
-    API_URL,
-    API_URL_BROWSER,
-    BASE_URL,
-    apiKey,
-    databaseURL,
-    projectId,
-    messagingSenderId,
-    appId,
-    measurementId
-  }
+
+  axios: {
+  },
 }

@@ -11,6 +11,7 @@ RUN go mod download
 RUN apk update \
   && apk add --no-cache git \
   && go get -u github.com/pilu/fresh \
+  && go get -u github.com/Watson-Sei/cloud-function-avoid-cli \
   && apk add mysql-client
 
 ENV GOOGLE_APPLICATION_CREDENTIALS="/go/src/api/firebase_adminsdk.json"
