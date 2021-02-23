@@ -90,3 +90,7 @@ sw.*
 *.swp
 
 config/.env.development
+
+
+static/firebase-auth-sw.js
+static/sw.js
