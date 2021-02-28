@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Watson-Sei/anichat/api_v1/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html"
 	"github.com/gofiber/websocket/v2"
@@ -17,9 +18,7 @@ func main()  {
 		Views: engine,
 	})
 
-	app.Get("/:id", func(c *fiber.Ctx) error {
-		return c.Render("index", nil)
-	})
+	routes.SetupRouter(app)
 
 	socketapp := app.Group("/ws")
 

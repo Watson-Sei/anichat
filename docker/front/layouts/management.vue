@@ -40,8 +40,8 @@ export default {
       drawer: false,
       menus: [
         { title: 'Dashboard', icon: 'mdi-web', url: '/admin/'},
-        { title: 'Room', icon: 'mdi-google-cloud', url: '/admin/room'},
-        { title: 'User', icon: 'mdi-account-box', url: '/admin/user'}
+        { title: 'Room', icon: 'mdi-google-cloud', url: '/admin/room/'},
+        { title: 'User', icon: 'mdi-account-box', url: '/admin/user/'}
       ]
     }
   }

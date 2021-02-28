@@ -20,7 +20,11 @@ export default {
   methods: {
     async signInWithGoogle() {
       const provider = new this.$fireModule.default.auth.GoogleAuthProvider();
-      const authData = await this.$fire.auth.signInWithPopup(provider)
+      await this.$fire.auth.signInWithPopup(provider).then(res => {
+        res.user.getIdToken().then(idToken => {
+          localStorage.setItem('access_token', idToken.toString())
+        })
+      })
       console.log('成功しました')
     }
   }

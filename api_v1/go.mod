@@ -11,9 +11,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.4.1
 	github.com/gofiber/template v1.6.6
 	github.com/gofiber/websocket/v2 v2.0.2
-	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/klauspost/compress v1.11.7 // indirect
-	github.com/sacsand/gofiber-firebaseauth v1.3.2 // indirect
 	github.com/savsgio/gotils v0.0.0-20210120114113-f9d780dcbd93 // indirect
 	github.com/valyala/fasthttp v1.19.0 // indirect
 	go.opencensus.io v0.22.6 // indirect
