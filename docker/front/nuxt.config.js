@@ -1,5 +1,7 @@
 const enviroment = process.env.NODE_ENV
+console.log(enviroment)
 require('dotenv').config({path: `config/.env.${enviroment}`})
+
 
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
@@ -31,6 +33,7 @@ export default {
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/axios',
+    '@nuxtjs/vuetify',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
