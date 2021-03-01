@@ -16,6 +16,14 @@
             <v-list-item-title>{{ menu.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdi-door-open</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title @click="Logout">Logout</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -44,6 +52,12 @@ export default {
         { title: 'User', icon: 'mdi-account-box', url: '/admin/user/'}
       ]
     }
+  },
+  methods: {
+    async Logout() {
+      await this.$fire.auth.signOut()
+      localStorage.removeItem('access_token')
+    },
   }
 }
 </script>
