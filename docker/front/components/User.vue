@@ -120,6 +120,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "User",
   props: ['users'],
@@ -137,11 +139,11 @@ export default {
       editedIndex: -1,
       editedItem: {
         displayName: '',
-        email: ''
+        email: '',
       },
       defaultItem: {
         displayName: '',
-        email: ''
+        email: '',
       }
     }
   },
@@ -193,7 +195,21 @@ export default {
     },
     save () {
       if (this.editedIndex > -1) {
-        Object.assign(this.users[this.editedIndex], this.editedItem)
+        const data = {
+          rawId: this.editedItem.rawId,
+          displayName: this.editedItem.displayName,
+          email: this.editedItem.email
+        }
+        axios.post("http://localhost/api/admin/users", data, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        }).then(() => {
+          console.log("user info update firebase admin sdk")
+          this.$nextTick(() => {
+            this.$emit("get-users")
+          })
+        })
       } else {
         this.users.push(this.editedItem)
       }

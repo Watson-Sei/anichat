@@ -1,5 +1,5 @@
 <template>
-  <User :users="users"/>
+  <User :users="users" @get-users="GetUsers"/>
 </template>
 
 <script>
@@ -15,16 +15,22 @@ export default {
     }
   },
   mounted() {
-    this.$axios.get("http://localhost/api/admin/users", {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-      }
-    }).then((response) => {
-      const obj = JSON.parse(response.data)
-      this.users = obj.users
-    }).catch((error) => {
-      console.log(error)
-    })
+    this.GetUsers()
+  },
+  methods: {
+    GetUsers() {
+      this.$axios.get("http://localhost/api/admin/users", {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+      }).then((response) => {
+        const obj = JSON.parse(response.data)
+        this.users = obj.users
+        console.log("Get Users実行されました")
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
   }
 }
 </script>

@@ -12,4 +12,6 @@ func SetupRouter(app *fiber.App)  {
 	admin.Use(firebase.Auth())
 
 	admin.Get("/users", controllers.GetUsers)
+
+	admin.Post("/users", controllers.UpdateUser)
 }

@@ -13,6 +13,12 @@ import (
 	"os"
 )
 
+type UserInfo struct {
+	UID string `json:"rawId"`
+	DisplayName string `json:"displayName"`
+	Email string `json:"email"`
+}
+
 func GetUsers(c *fiber.Ctx) error {
 	ctx := context.Background()
 
@@ -51,4 +57,51 @@ func GetUsers(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(string(bytes))
+}
+
+func UpdateUser(c *fiber.Ctx) error {
+	p := new(UserInfo)
+
+	if err := c.BodyParser(p); err != nil {
+		log.Println(err)
+		return c.Status(400).JSON(&fiber.Map{
+			"success": false,
+			"message": err,
+		})
+	}
+
+	ctx := context.Background()
+
+	opt := option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+	app, err := firebase.NewApp(context.Background(), nil, opt)
+	if err != nil {
+		log.Println(fmt.Errorf("error initializing app: %v\n", err))
+	}
+
+	client, err := app.Auth(ctx)
+	if err != nil {
+		log.Fatalf("error getting Auth client: %v\n", err)
+	}
+
+	params := (&auth.UserToUpdate{}).
+		Email(p.Email).
+		DisplayName(p.DisplayName)
+	u, err := client.UpdateUser(ctx, p.UID, params)
+
+	if err != nil {
+		log.Fatalf("error updating user: %v\n", err)
+	}
+	log.Printf("Successfully fetched user data: %#v\n", u.UserInfo)
+
+	if err := c.JSON(&fiber.Map{
+		"success": true,
+		"message": "Profile successfully update",
+	}); err != nil {
+		c.Status(500).JSON(&fiber.Map{
+			"success": false,
+			"message": "Error updating profile",
+		})
+	}
+
+	return nil
 }

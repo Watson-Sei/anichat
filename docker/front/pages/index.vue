@@ -20,7 +20,7 @@ export default {
   methods: {
     async Logout() {
       await this.$fire.auth.signOut()
-      localStorage.delete('access_token')
+      localStorage.removeItem('access_token')
     },
   }
 }
