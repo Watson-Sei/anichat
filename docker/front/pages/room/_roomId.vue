@@ -20,7 +20,7 @@
 import { w3cwebsocket } from 'websocket'
 const W3CWebSocket = w3cwebsocket
 export default {
-  // layout: 'protected',
+  layout: 'protected',
   middleware: 'authenticated',
   name: "roomId",
   computed: {

@@ -21,6 +21,14 @@
             </nuxt-link>
           </v-list-item-icon>
         </v-list-item>
+        <v-list-item v-for="menu in menus" :key="menu.title" :to="menu.url">
+          <v-list-item-icon>
+            <v-icon>{{ menu.icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ menu.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -44,6 +52,9 @@ export default {
   data() {
     return {
       drawer: false,
+      menus: [
+        { title: 'Room List', icon: 'mdi-format-list-bulleted-triangle', url: '/room/'},
+      ]
     }
   },
 }
