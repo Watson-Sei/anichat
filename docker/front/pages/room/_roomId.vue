@@ -201,7 +201,22 @@ export default {
 
       this.$router.push("/room")
     }
-  }
+  },
+  beforeRouteLeave(to, from, next) {
+    const answer = window.confirm("本当に退室しますか？")
+    if (answer) {
+      this.socket.send(JSON.stringify({
+        event: "quit",
+        token: this.IAM.token
+      }))
+
+      // ボタンを無効にする
+      this.isQuit = true
+      next();
+    } else {
+      next(false)
+    }
+  },
 }
 </script>
 
