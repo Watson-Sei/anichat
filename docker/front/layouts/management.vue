@@ -3,7 +3,7 @@
     <v-navigation-drawer app v-model="drawer">
       <v-list-item>
         <v-list-item-title class="title">
-          Application
+          Application <a href="/"><v-icon>mdi-vector-link</v-icon></a>
         </v-list-item-title>
       </v-list-item>
       <v-divider />

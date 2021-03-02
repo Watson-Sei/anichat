@@ -40,6 +40,7 @@ export default {
   modules: [
     '@nuxtjs/dotenv',
     '@nuxtjs/pwa',
+    'nuxt-fontawesome',
     [
       '@nuxtjs/firebase',
       {
@@ -77,6 +78,15 @@ export default {
 
       dev: true
     }
+  },
+
+  fontawesome: {
+    imports: [
+      {
+        set: '@fortawesome/free-solid-svg-icons',
+        icons: ['fas']
+      }
+    ]
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
