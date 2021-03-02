@@ -10,10 +10,16 @@
       <v-list nav>
         <v-list-item class="px-2">
           <v-list-item-avatar>
-            <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
+            <v-img :src="this.$store.state.authUser.photoURL"></v-img>
           </v-list-item-avatar>
 
-          <v-list-item-title>John Watson</v-list-item-title>
+          <v-list-item-title>Sei Watson</v-list-item-title>
+
+          <v-list-item-icon>
+            <nuxt-link to="/profile">
+              <v-icon>mdi-cog-outline</v-icon>
+            </nuxt-link>
+          </v-list-item-icon>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -39,7 +45,7 @@ export default {
     return {
       drawer: false,
     }
-  }
+  },
 }
 </script>
 
