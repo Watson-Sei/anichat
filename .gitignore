@@ -6,3 +6,9 @@
 ./docker/front/config/
 
 docker/db/data
+
+docker/front/static/firebase-auth-sw.js
+
+api_v1/tmp
+
+api_v1/firebase_adminsdk.json
