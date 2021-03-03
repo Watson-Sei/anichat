@@ -1,10 +1,13 @@
 .idea
 .DS_Store
 
+#Most important confidential information
 ./docker/db/.env
 
-./docker/front/config/
+# enviroment file
+./docker/front/config
 
+<<<<<<< HEAD
 docker/db/data
 
 docker/front/static/firebase-auth-sw.js
@@ -12,3 +15,17 @@ docker/front/static/firebase-auth-sw.js
 api_v1/tmp
 
 api_v1/firebase_adminsdk.json
+=======
+# database archive
+docker/db/data
+
+# firebase_admin secret file
+api_v1/firebase_adminsdk.json
+
+# tmp file
+api_v1/tmp
+
+# service worker
+./docker/front/static/firebase-auth-sw.js
+./docker/front/static/sw.js
+>>>>>>> e2a8615a6d03ca23764e70bbc24d5d18edcab31f

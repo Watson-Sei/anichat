@@ -1,45 +1,28 @@
 <template>
   <div class="container">
     <div class="hello">
-      <h1 v-if="user">Welcome to {{ user.name }}🎉</h1>
+      <h1 v-if="user">Welcome to {{ user.email }}🎉</h1>
+      <nuxt-link to="/admin">Admin Link</nuxt-link><br>
+      <nuxt-link to="/room">Room List</nuxt-link><br>
       <button @click="Logout">Sign out</button>
     </div>
   </div>
 </template>
+
 <script>
 export default {
+  layout: 'protected',
   middleware: 'authenticated',
-  computed: {
-    user(state) {
-      return this.$store.getters['modules/user/user'];
+  data() {
+    return {
+      user: this.$store.state.authUser
     }
   },
   methods: {
     async Logout() {
-      await this.$store.dispatch('modules/user/logout')
-      await this.$router.push("/auth/signin")
-    }
+      await this.$fire.auth.signOut()
+      localStorage.removeItem('access_token')
+    },
   }
 }
 </script>
-
-<style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-button {
-  margin: 10px 0;
-  padding: 10px;
-}
-</style>
