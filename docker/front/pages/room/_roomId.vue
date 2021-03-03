@@ -1,31 +1,48 @@
 <template>
-  <div>
-    <h1>{{ $route.params.roomId }}ルームへようこそ</h1>
-    <div>
-      <textarea v-model="message"></textarea>
-      <button id="post-button" v-on:click="submit">送信</button>
-      <button v-bind:disabled="isQuit" id="quit-button" v-on:click="quit">退室</button>
-      <!-- 発言ログ -->
-      <ul>
-        <li v-for="(data, index) in messages" :key="index">
-          <span v-bind:class="data.class"><span class="name">{{ data.name }}</span>> {{ data.message }}</span>
-        </li>
-      </ul>
-      <!-- メンバー一覧 -->
-    </div>
-  </div>
+  <v-app>
+    <v-container class="fill-height">
+      <v-row class="fill-height pb-14" align="end">
+        <v-col>
+          <div v-for="(item, index) in messages" :key="index" :class="['d-flex flex-row align-center my-2', item.class == 'msg-me' ? 'justify-end': null]">
+            <span v-if="item.class == 'msg-me'" class="blue--text mr-3">{{ item.message }}</span>
+            <v-avatar :color="item.class == 'msg-me' ? 'indigo':'red'" size="36">
+              <span class="white--text">{{ item.name[0] }}</span>
+            </v-avatar>
+            <span v-if="item.class != 'msg-me'" class="blue--text ml-3">{{ item.message }}</span>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-footer inset fixed app>
+      <v-container class="ma-0 pa-0">
+        <v-row no-gutters>
+          <v-col>
+            <div class="d-flex flex-row align-center">
+              <v-text-field v-model="message" placeholder="Type Something" @keypress.enter="send"></v-text-field>
+              <v-btn icon class="ml-4" @click="send"><v-icon>mdi-send</v-icon></v-btn>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
 import { w3cwebsocket } from 'websocket'
 const W3CWebSocket = w3cwebsocket
 export default {
-  // layout: 'protected',
+  layout: 'protected',
   middleware: 'authenticated',
   name: "roomId",
   computed: {
     user(state) {
-      return this.$store.getters['modules/user/user']
+      return this.$store.state.authUser
+    }
+  },
+  watch: {
+    messages: function () {
+      this.$vuetify.goTo(99999)
     }
   },
   data() {
@@ -53,6 +70,11 @@ export default {
     this.socket.onopen = (event) => {
       console.log("安全に接続しました")
     }
+    // 切断ハンドラ
+    this.socket.onclose = (event) => {
+      console.log("切断されました")
+      this.$router.push({path: "/room"})
+    }
     // メッセージの更新があれば受け取る
     this.socket.onmessage = (event) => {
       // 受け取った文字列をjsonにparseします
@@ -63,7 +85,7 @@ export default {
       if (data.event === "token") {
         console.log("tokenを受け取りました")
         this.IAM.token = data.token
-        this.IAM.name = this.user.name
+        this.IAM.name = this.user.displayName
 
         // event:join送信
         console.log("join発火")
@@ -134,7 +156,7 @@ export default {
   methods: {
     // ルームにユーザー情報を渡す
     // 送信ボタン関数
-    submit: function () {
+    send: function () {
       // 接続は維持されているか、チャット内容は空で実行されて無いかなどチェックをして送信をします。
       if (!this.socket) {
         return false;
@@ -196,10 +218,33 @@ export default {
 
       this.$router.push("/room")
     }
-  }
+  },
+  beforeRouteLeave(to, from, next) {
+    const answer = window.confirm("本当に退室しますか？")
+    if (answer) {
+      this.socket.send(JSON.stringify({
+        event: "quit",
+        token: this.IAM.token
+      }))
+
+      // ボタンを無効にする
+      this.isQuit = true
+      next();
+    } else {
+      next(false)
+    }
+  },
 }
 </script>
 
 <style scoped>
-
+.msg-master {
+  margin-right: auto;
+}
+.msg-member {
+  margin-right: auto;
+}
+.msg-me {
+  margin-left: auto;
+}
 </style>
