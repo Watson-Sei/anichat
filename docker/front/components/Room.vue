@@ -24,6 +24,17 @@
           v-model="dialog"
           max-width="500px"
         >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              dark
+              class="mb-2"
+              v-bind="attrs"
+              v-on="on"
+            >
+              New Item
+            </v-btn>
+          </template>
           <v-card>
             <v-card-title>
               <span class="handline">{{ formTitle }}</span>
@@ -50,6 +61,16 @@
                     <v-text-field
                       v-model="editedItem.time"
                       label="Room Time"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.img"
+                      label="Room Image Link"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -143,6 +164,7 @@ export default {
         {text: 'Title', value: 'title'},
         {text: 'Time', value: 'time'},
         {text: 'Public', value: 'public'},
+        {text: 'Image', value: 'img'},
         {text: '操作', value: 'actions', align: 'end', sortable: false}
       ],
       editedIndex: -1,
@@ -150,12 +172,14 @@ export default {
         id: 0,
         title: '',
         time: '',
+        img: '',
         public: false
       },
       defaultItem: {
         id: 0,
         title: '',
         time: '',
+        img: '',
         public: false
       },
       search: '',
@@ -227,6 +251,19 @@ export default {
           })
         })
       } else {
+        const data = {
+          title: this.editedItem.title,
+          time: this.editedItem.time,
+          img: this.editedItem.img,
+          public: this.editedItem.public
+        }
+        axios.post("http://localhost/api/admin/rooms", data, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        }).then((response) => {
+          console.log(response)
+        })
         this.rooms.push(this.editedItem)
       }
       this.close()
