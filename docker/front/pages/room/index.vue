@@ -15,7 +15,7 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-card max-width="500px" v-for="(item, index) in dataset.room" :key="index" class="ma-2">
+      <v-card max-width="500px" v-for="(item, index) in dataset.rooms" :key="index" class="ma-2">
         <v-row>
           <v-col cols="4">
             <v-img :src="item.img" />
@@ -28,7 +28,7 @@
               {{ item.time }}
             </v-card-subtitle>
             <v-card-actions>
-              <v-btn class="primary" v-if="item.public" @click="returnChat(`${item.chatId}`)">Go to Chat</v-btn>
+              <v-btn class="primary" v-if="item.public" @click="returnChat(`${item.id}`)">Go to Chat</v-btn>
               <v-btn disabled v-else>Go to Chat</v-btn>
             </v-card-actions>
           </v-col>
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   layout: 'protected',
   middleware: 'authenticated',
@@ -47,10 +49,7 @@ export default {
     return {
       search: '',
       dataset: {
-        room: [
-          { chatId: 1, title: "ドクターストーン#1", time: "22:30 ~ 23:00", public: true, img: "https://eiga.k-img.com/images/anime/program/104831/photo/777ee2e888036ca0/320.jpg?1456654190"},
-          { chatId: 2, title: "進撃の巨人 Season 3 #11", time: "23:00 ~ 23:30", public: false, img: "https://eiga.k-img.com/images/anime/program/106280/photo/d581dab61c13028f/320.jpg?1524821461"}
-        ]
+        rooms: []
       }
     }
   },
@@ -62,6 +61,12 @@ export default {
       const path = `/room/${val}/`
       this.$router.push(path)
     }
+  },
+  mounted() {
+    axios.get("http://localhost/api/rooms")
+    .then((response) => {
+      this.dataset.rooms = response.data.data
+    })
   }
 }
 </script>

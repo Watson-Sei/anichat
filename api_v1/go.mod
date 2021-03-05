@@ -18,4 +18,6 @@ require (
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/oauth2 v0.0.0-20210201163806-010130855d6c // indirect
 	google.golang.org/api v0.38.0
+	gorm.io/driver/mysql v1.0.4 // indirect
+	gorm.io/gorm v1.20.12 // indirect
 )

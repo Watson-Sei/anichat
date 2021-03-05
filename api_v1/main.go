@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/Watson-Sei/anichat/api_v1/database"
+	"github.com/Watson-Sei/anichat/api_v1/models"
 	"github.com/Watson-Sei/anichat/api_v1/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html"
@@ -17,6 +19,12 @@ func main()  {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
+
+	if err := database.Connect(); err != nil {
+		log.Panic("Can't connect database:", err.Error())
+	}
+
+	database.DBConn.AutoMigrate(&models.Room{})
 
 	routes.SetupRouter(app)
 
