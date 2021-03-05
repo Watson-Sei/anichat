@@ -16,15 +16,15 @@
             <v-list-item-title>{{ menu.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
-          <v-list-item-icon>
-            <v-icon>mdi-door-open</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title @click="Logout">Logout</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
+
+      <template v-slot:append>
+        <div class="pa-2">
+          <v-btn block class="black white--text">
+            Logout
+          </v-btn>
+        </div>
+      </template>
     </v-navigation-drawer>
 
     <v-app-bar app>

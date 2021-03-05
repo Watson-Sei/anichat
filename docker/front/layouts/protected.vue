@@ -33,7 +33,7 @@
 
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn block class="black white--text">
+          <v-btn block class="black white--text" @click="Logout">
             Logout
           </v-btn>
         </div>
@@ -65,6 +65,12 @@ export default {
       ]
     }
   },
+  methods: {
+    async Logout() {
+      await this.$fire.auth.signOut()
+      localStorage.removeItem('access_token')
+    }
+  }
 }
 </script>
 
