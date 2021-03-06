@@ -29,6 +29,14 @@
             <v-list-item-title>{{ menu.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-if="this.$store.getters['isAdminIn']" to="/admin/">
+          <v-list-item-icon>
+            <v-icon>mdi-shield-lock</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Admin</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
 
       <template v-slot:append>

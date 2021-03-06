@@ -3,7 +3,7 @@
     <v-navigation-drawer app v-model="drawer">
       <v-list-item>
         <v-list-item-title class="title">
-          Application <a href="/"><v-icon>mdi-vector-link</v-icon></a>
+          Application <a href="/room"><v-icon>mdi-vector-link</v-icon></a>
         </v-list-item-title>
       </v-list-item>
       <v-divider />
@@ -20,7 +20,7 @@
 
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn block class="black white--text">
+          <v-btn block class="black white--text" @click="Logout">
             Logout
           </v-btn>
         </div>
