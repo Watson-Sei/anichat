@@ -10,11 +10,11 @@ import (
 
 var (
 	// DBConn is a pointer to gorm.DB
-	DBConn		*gorm.DB
-	user 		= os.Getenv("MYSQL_USER")
-	password	= os.Getenv("MYSQL_PASSWORD")
-	host		= os.Getenv("MYSQL_HOST")
-	dbname 		= os.Getenv("MYSQL_DATABASE")
+	DBConn   *gorm.DB
+	user     = os.Getenv("MYSQL_USER")
+	password = os.Getenv("MYSQL_PASSWORD")
+	host     = os.Getenv("MYSQL_HOST")
+	dbname   = os.Getenv("MYSQL_DATABASE")
 )
 
 func Connect() (err error) {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/Watson-Sei/anichat/api_v1/database"
+	"github.com/Watson-Sei/anichat/api_v1/middleware/chat"
 	"github.com/Watson-Sei/anichat/api_v1/models"
 	"github.com/Watson-Sei/anichat/api_v1/routes"
 	"github.com/gofiber/fiber/v2"
@@ -12,7 +13,7 @@ import (
 
 var SecretKey string = "+_z#&=@+)^xpok3$#_@vg3xd$3avp8gj&_dx#9u-f(v+5lgs7@"
 
-func main()  {
+func main() {
 
 	engine := html.New("./templates", ".html")
 
@@ -32,12 +33,7 @@ func main()  {
 
 	go h.run()
 
-	socketapp.Use(func(c *fiber.Ctx) error {
-		if websocket.IsWebSocketUpgrade(c) {
-			return c.Next()
-		}
-		return c.SendStatus(fiber.StatusUpgradeRequired)
-	})
+	socketapp.Use(chat.PublicChecker(), chat.WebSocket())
 
 	socketapp.Get("/:roomId", websocket.New(func(c *websocket.Conn) {
 		roomId := c.Params("roomId")
@@ -61,7 +57,7 @@ func main()  {
 			}
 
 			if messageType == websocket.TextMessage {
-				m := message{s.conn,msg, s.room}
+				m := message{s.conn, msg, s.room}
 				h.broadcast <- m
 			} else {
 				log.Println("websocket message received of type", messageType)

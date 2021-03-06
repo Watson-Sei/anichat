@@ -10,9 +10,9 @@ import (
 )
 
 type ResponseHTTP struct {
-	Success bool 		`json:"success"`
-	Data 	interface{}	`json:"data"`
-	Message string		`json:"message"`
+	Success bool        `json:"success"`
+	Data    interface{} `json:"data"`
+	Message string      `json:"message"`
 }
 
 func GetAllRooms(c *fiber.Ctx) error {
@@ -23,14 +23,14 @@ func GetAllRooms(c *fiber.Ctx) error {
 		return c.Status(http.StatusServiceUnavailable).JSON(ResponseHTTP{
 			Success: false,
 			Message: res.Error.Error(),
-			Data: nil,
+			Data:    nil,
 		})
 	}
 
 	return c.JSON(ResponseHTTP{
 		Success: true,
 		Message: "Success get all rooms",
-		Data: rooms,
+		Data:    rooms,
 	})
 }
 
@@ -42,7 +42,7 @@ func RegisterRoom(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(ResponseHTTP{
 			Success: false,
 			Message: err.Error(),
-			Data: nil,
+			Data:    nil,
 		})
 	}
 
@@ -51,7 +51,7 @@ func RegisterRoom(c *fiber.Ctx) error {
 	return c.JSON(ResponseHTTP{
 		Success: true,
 		Message: "Success register a room.",
-		Data: *room,
+		Data:    *room,
 	})
 }
 
@@ -76,13 +76,13 @@ func UpdateRoom(c *fiber.Ctx) error {
 			return c.Status(http.StatusNotFound).JSON(ResponseHTTP{
 				Success: false,
 				Message: fmt.Sprintf("Room with ID %v not found.", id),
-				Data: nil,
+				Data:    nil,
 			})
 		default:
 			return c.Status(http.StatusServiceUnavailable).JSON(ResponseHTTP{
 				Success: false,
 				Message: err.Error(),
-				Data: nil,
+				Data:    nil,
 			})
 		}
 	}
@@ -92,7 +92,7 @@ func UpdateRoom(c *fiber.Ctx) error {
 	return c.JSON(ResponseHTTP{
 		Success: true,
 		Message: "Success update room",
-		Data: *afterRoom,
+		Data:    *afterRoom,
 	})
 }
 
@@ -107,13 +107,13 @@ func DeleteRoom(c *fiber.Ctx) error {
 			return c.Status(http.StatusNotFound).JSON(ResponseHTTP{
 				Success: false,
 				Message: fmt.Sprintf("Room with ID %v not found.", id),
-				Data: nil,
+				Data:    nil,
 			})
 		default:
 			return c.Status(http.StatusServiceUnavailable).JSON(ResponseHTTP{
 				Success: false,
 				Message: err.Error(),
-				Data: nil,
+				Data:    nil,
 			})
 		}
 	}
@@ -123,6 +123,6 @@ func DeleteRoom(c *fiber.Ctx) error {
 	return c.JSON(ResponseHTTP{
 		Success: true,
 		Message: "Success delete room.",
-		Data: nil,
+		Data:    nil,
 	})
 }
