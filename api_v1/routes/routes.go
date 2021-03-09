@@ -6,12 +6,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SetupRouter(app *fiber.App)  {
+func SetupRouter(app *fiber.App) {
+
+	app.Get("/rooms", controllers.GetAllRooms)
+
 	admin := app.Group("/admin")
 
 	admin.Use(firebase.Auth())
 
+	// User management Routes
 	admin.Get("/users", controllers.GetUsers)
+	admin.Put("/users", controllers.UpdateUser)
 
-	admin.Post("/users", controllers.UpdateUser)
+	// Room management Routes
+	admin.Post("/rooms", controllers.RegisterRoom)
+	admin.Put("/rooms/:id", controllers.UpdateRoom)
+	admin.Delete("/rooms/:id", controllers.DeleteRoom)
 }

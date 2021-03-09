@@ -19,16 +19,16 @@ type subscription struct {
 }
 
 type hub struct {
-	rooms map[string]map[*websocket.Conn]bool
-	broadcast chan message
-	register chan subscription
+	rooms      map[string]map[*websocket.Conn]bool
+	broadcast  chan message
+	register   chan subscription
 	unregister chan subscription
 }
 
 var h = hub{
-	rooms: make(map[string]map[*websocket.Conn]bool),
-	broadcast: make(chan message),
-	register: make(chan subscription),
+	rooms:      make(map[string]map[*websocket.Conn]bool),
+	broadcast:  make(chan message),
+	register:   make(chan subscription),
 	unregister: make(chan subscription),
 }
 
@@ -40,7 +40,7 @@ var MemberCount int = 1
 func (h *hub) run() {
 	for {
 		select {
-		case s := <- h.register:
+		case s := <-h.register:
 			connections := h.rooms[s.room]
 			if connections == nil {
 				connections = make(map[*websocket.Conn]bool)
@@ -86,7 +86,7 @@ func (h *hub) run() {
 				}
 			}
 
-		case s := <- h.unregister:
+		case s := <-h.unregister:
 			connections := h.rooms[s.room]
 			if connections != nil {
 				if _, ok := connections[s.conn]; ok {
@@ -95,7 +95,7 @@ func (h *hub) run() {
 				}
 			}
 
-		case m := <- h.broadcast:
+		case m := <-h.broadcast:
 			log.Println("message received:", string(m.data))
 			connections := h.rooms[m.room]
 
@@ -110,9 +110,9 @@ func (h *hub) run() {
 					// 入室OK + 現在の入室者一覧を通知
 					memberlist := getMemberList(m.room)
 					bytes, err := json.Marshal(map[string]interface{}{
-						"event": "join-result",
+						"event":  "join-result",
 						"status": true,
-						"list": memberlist,
+						"list":   memberlist,
 					})
 					if err != nil {
 						log.Println(err)
@@ -150,7 +150,7 @@ func (h *hub) run() {
 					// 他人
 					bytes, err = json.Marshal(map[string]interface{}{
 						"event": "member-join",
-						"name": dataMap["name"],
+						"name":  dataMap["name"],
 						"token": Member[m.room][m.conn]["count"],
 					})
 					if err != nil {
@@ -171,7 +171,7 @@ func (h *hub) run() {
 					}
 				} else {
 					bytes, err := json.Marshal(map[string]interface{}{
-						"event": "join-result",
+						"event":  "join-result",
 						"status": false,
 					})
 					if err != nil {
@@ -192,8 +192,8 @@ func (h *hub) run() {
 			if dataMap["event"] == "post" {
 				// 本人に通知
 				bytes, err := json.Marshal(map[string]interface{}{
-					"event": "member-post",
-					"token": dataMap["token"],
+					"event":   "member-post",
+					"token":   dataMap["token"],
 					"message": dataMap["message"],
 				})
 				if err != nil {
@@ -210,8 +210,8 @@ func (h *hub) run() {
 
 				// 本人以外に通知
 				bytes, err = json.Marshal(map[string]interface{}{
-					"event": "member-post",
-					"token": Member[m.room][m.conn]["count"],
+					"event":   "member-post",
+					"token":   Member[m.room][m.conn]["count"],
 					"message": dataMap["message"],
 				})
 				if err != nil {
@@ -237,7 +237,7 @@ func (h *hub) run() {
 				if authToken(m.conn, m.room, dataMap["token"].(string)) {
 					// 本人に通知
 					bytes, err := json.Marshal(map[string]interface{}{
-						"event": "quit-result",
+						"event":  "quit-result",
 						"status": true,
 					})
 					if err != nil {
@@ -276,7 +276,7 @@ func (h *hub) run() {
 				} else {
 					// 本人にNG通知
 					bytes, err := json.Marshal(map[string]interface{}{
-						"event": "quit-result",
+						"event":  "quit-result",
 						"status": false,
 					})
 					if err != nil {
@@ -297,7 +297,7 @@ func (h *hub) run() {
 	}
 }
 
-func authToken(conn *websocket.Conn, room,token string) bool {
+func authToken(conn *websocket.Conn, room, token string) bool {
 	if _, ok := Member[room][conn]; ok {
 		if token == Member[room][conn]["token"] {
 			return true
@@ -316,7 +316,7 @@ func getMemberList(room string) []map[string]interface{} {
 		if cur["name"] != nil {
 			list = append(list, map[string]interface{}{
 				"token": cur["count"],
-				"name": cur["name"],
+				"name":  cur["name"],
 			})
 		}
 	}

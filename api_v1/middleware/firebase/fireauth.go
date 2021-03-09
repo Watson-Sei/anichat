@@ -56,13 +56,13 @@ func Auth() fiber.Handler {
 	}
 }
 
-func unauthorized(c *fiber.Ctx)  {
+func unauthorized(c *fiber.Ctx) {
 	c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 		"error": http.StatusText(http.StatusInternalServerError),
 	})
 }
 
-func firebaseUninitialized(c *fiber.Ctx)  {
+func firebaseUninitialized(c *fiber.Ctx) {
 	c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 		"error": http.StatusText(http.StatusInternalServerError),
 	})

@@ -1,15 +1,15 @@
 <template>
   <v-card class="ma-4">
     <v-card-title>
-      User List
+      Room List
       <v-spacer></v-spacer>
     </v-card-title>
+
     <v-data-table
       :headers="headers"
-      :items="users"
-      sort-by="calories"
-      class="elevation-1"
+      :items="rooms"
       :search="search"
+      class="elevation-1"
     >
       <template v-slot:top>
         <v-text-field
@@ -24,9 +24,20 @@
           v-model="dialog"
           max-width="500px"
         >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              dark
+              class="mb-2"
+              v-bind="attrs"
+              v-on="on"
+            >
+              New Item
+            </v-btn>
+          </template>
           <v-card>
             <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
+              <span class="handline">{{ formTitle }}</span>
             </v-card-title>
 
             <v-card-text>
@@ -38,8 +49,8 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.displayName"
-                      label="User name"
+                      v-model="editedItem.title"
+                      label="Room title"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -48,15 +59,35 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.email"
-                      label="User mail"
+                      v-model="editedItem.time"
+                      label="Room Time"
                     ></v-text-field>
+                  </v-col>
+                  <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.img"
+                      label="Room Image Link"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-checkbox
+                      v-model="editedItem.public"
+                      label="Room Public"
+                    ></v-checkbox>
                   </v-col>
                 </v-row>
               </v-container>
             </v-card-text>
 
-            <v-card-actions>
+            <v-card-subtitle>
               <v-spacer></v-spacer>
               <v-btn
                 color="blue darken-1"
@@ -72,15 +103,11 @@
               >
                 Save
               </v-btn>
-            </v-card-actions>
+            </v-card-subtitle>
           </v-card>
         </v-dialog>
 
-        <!-- 削除処理 -->
-        <v-dialog
-          v-model="dialogDelete"
-          max-width="500px"
-        >
+        <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="headline">
               Are you sure you want to delete this item?
@@ -93,6 +120,16 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
+      </template>
+      <template v-slot:item.time="{ item }">
+        {{ item.time }}
+      </template>
+      <template v-slot:item.public="{ item }">
+        <v-simple-checkbox
+          v-model="item.public"
+          disabled
+        ></v-simple-checkbox>
       </template>
 
       <template v-slot:item.actions="{ item }">
@@ -113,63 +150,72 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 
 export default {
-  name: "User",
-  props: ['users'],
+  name: "Room",
+  props: ['rooms'],
   data() {
     return {
-      search: '',
-      headers: [
-        { text: '名前', align: 'center', value: 'displayName'},
-        { text: 'メールアドレス', align: 'center', value: 'email'},
-        { text: 'UID', align: 'center', value: 'rawId'},
-        { text: '操作', value: 'actions', align: 'end', sortable: false}
-      ],
       dialog: false,
       dialogDelete: false,
+      headers: [
+        {text: 'ID', value: 'id'},
+        {text: 'Title', value: 'title'},
+        {text: 'Time', value: 'time'},
+        {text: 'Public', value: 'public'},
+        {text: 'Image', value: 'img'},
+        {text: '操作', value: 'actions', align: 'end', sortable: false}
+      ],
       editedIndex: -1,
       editedItem: {
-        displayName: '',
-        email: '',
+        id: 0,
+        title: '',
+        time: '',
+        img: '',
+        public: false
       },
       defaultItem: {
-        displayName: '',
-        email: '',
-      }
+        id: 0,
+        title: '',
+        time: '',
+        img: '',
+        public: false
+      },
+      search: '',
     }
   },
   computed: {
-    formTitle() {
-      if (this.editedIndex === -1) {
-        return 'Edit User'
+    formTitle () {
+      if(this.editedIndex === -1) {
+        return 'Edit Item'
       }
     },
   },
-
   watch: {
     dialog (val) {
       val || this.close()
     },
     dialogDelete (val) {
       val || this.closeDelete()
-    },
+    }
   },
-
   methods: {
     editItem (item) {
-      this.editedIndex = this.users.indexOf(item)
+      this.editedIndex = this.rooms.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
     deleteItem (item) {
-      this.editedIndex = this.users.indexOf(item)
+      this.editedIndex = this.rooms.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
     deleteItemConfirm () {
-      this.users.splice(this.editedIndex, 1)
+      this.rooms.splice(this.editedIndex, 1)
+      this.$nextTick(() => {
+        this.$emit("delete-rooms", this.editedItem.id)
+      })
       this.closeDelete()
     },
     close () {
@@ -189,26 +235,40 @@ export default {
     save () {
       if (this.editedIndex > -1) {
         const data = {
-          rawId: this.editedItem.rawId,
-          displayName: this.editedItem.displayName,
-          email: this.editedItem.email
+          id: this.editedItem.id,
+          title: this.editedItem.title,
+          time: this.editedItem.time,
+          public: this.editedItem.public
         }
-        axios.put("http://localhost/api/admin/users", data, {
+        axios.put(`http://localhost/api/admin/rooms/${this.editedItem.id}`, data, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
           }
         }).then(() => {
-          console.log("user info update firebase admin sdk")
+          console.log("room info update")
           this.$nextTick(() => {
-            this.$emit("get-users")
+            this.$emit("get-rooms")
           })
         })
       } else {
-        this.users.push(this.editedItem)
+        const data = {
+          title: this.editedItem.title,
+          time: this.editedItem.time,
+          img: this.editedItem.img,
+          public: this.editedItem.public
+        }
+        axios.post("http://localhost/api/admin/rooms", data, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        }).then((response) => {
+          console.log(response)
+        })
+        this.rooms.push(this.editedItem)
       }
       this.close()
-    },
-  },
+    }
+  }
 }
 </script>
 

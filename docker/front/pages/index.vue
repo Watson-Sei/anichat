@@ -1,28 +1,12 @@
 <template>
-  <div class="container">
-    <div class="hello">
-      <h1 v-if="user">Welcome to {{ user.email }}🎉</h1>
-      <nuxt-link to="/admin">Admin Link</nuxt-link><br>
-      <nuxt-link to="/room">Room List</nuxt-link><br>
-      <button @click="Logout">Sign out</button>
-    </div>
+  <div>
+    <nuxt-link v-if="this.$store.getters['isLoggedIn']" to="/room">Go to AniChat.jp</nuxt-link>
+    <nuxt-link v-else to="/auth/signin">Login</nuxt-link>
   </div>
 </template>
 
 <script>
 export default {
-  layout: 'protected',
-  middleware: 'authenticated',
-  data() {
-    return {
-      user: this.$store.state.authUser
-    }
-  },
-  methods: {
-    async Logout() {
-      await this.$fire.auth.signOut()
-      localStorage.removeItem('access_token')
-    },
-  }
+  layout: 'default',
 }
 </script>

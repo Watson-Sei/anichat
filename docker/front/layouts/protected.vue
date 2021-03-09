@@ -29,7 +29,23 @@
             <v-list-item-title>{{ menu.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-if="this.$store.getters['isAdminIn']" to="/admin/">
+          <v-list-item-icon>
+            <v-icon>mdi-shield-lock</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Admin</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
+
+      <template v-slot:append>
+        <div class="pa-2">
+          <v-btn block class="black white--text" @click="Logout">
+            Logout
+          </v-btn>
+        </div>
+      </template>
     </v-navigation-drawer>
 
     <v-app-bar app>
@@ -57,6 +73,12 @@ export default {
       ]
     }
   },
+  methods: {
+    async Logout() {
+      await this.$fire.auth.signOut()
+      localStorage.removeItem('access_token')
+    }
+  }
 }
 </script>
 

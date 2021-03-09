@@ -3,7 +3,7 @@
     <v-navigation-drawer app v-model="drawer">
       <v-list-item>
         <v-list-item-title class="title">
-          Application <a href="/"><v-icon>mdi-vector-link</v-icon></a>
+          Application <a href="/room"><v-icon>mdi-vector-link</v-icon></a>
         </v-list-item-title>
       </v-list-item>
       <v-divider />
@@ -16,15 +16,15 @@
             <v-list-item-title>{{ menu.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
-          <v-list-item-icon>
-            <v-icon>mdi-door-open</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title @click="Logout">Logout</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
+
+      <template v-slot:append>
+        <div class="pa-2">
+          <v-btn block class="black white--text" @click="Logout">
+            Logout
+          </v-btn>
+        </div>
+      </template>
     </v-navigation-drawer>
 
     <v-app-bar app>

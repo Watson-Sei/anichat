@@ -14,9 +14,9 @@ import (
 )
 
 type UserInfo struct {
-	UID string `json:"rawId"`
+	UID         string `json:"rawId"`
 	DisplayName string `json:"displayName"`
-	Email string `json:"email"`
+	Email       string `json:"email"`
 }
 
 func GetUsers(c *fiber.Ctx) error {
