@@ -48,7 +48,7 @@ export const actions = {
 
     if (authUser && claims) {
       try {
-        await this.$router.push("/")
+        await this.$router.push("/room")
       } catch (e) {
         console.error(e)
       }
