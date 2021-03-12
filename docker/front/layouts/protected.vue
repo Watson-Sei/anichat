@@ -13,7 +13,7 @@
             <v-img :src="this.$store.state.authUser.photoURL"></v-img>
           </v-list-item-avatar>
 
-          <v-list-item-title>Sei Watson</v-list-item-title>
+          <v-list-item-title>{{ this.$store.state.authUser.displayName }}</v-list-item-title>
 
           <v-list-item-icon>
             <nuxt-link to="/profile">

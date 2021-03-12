@@ -15,7 +15,7 @@
             <li><nuxt-link to="/support" class="n-link">サポート</nuxt-link></li>
             <li>
               <nuxt-link v-if="this.$store.getters['isLoggedIn']" to="/room" class="n-link btn-gradient-radius">チャットを開始</nuxt-link>
-              <nuxt-link v-else to="/auth/signin" class="n-link btn-gradient-radius">ログイン</nuxt-link>
+              <nuxt-link v-else to="/auth/signin" class="n-link btn-gradient-radius" @click.native="toggle">ログイン</nuxt-link>
             </li>
           </ul>
         </nav>
@@ -30,7 +30,7 @@
             </li>
             <li><nuxt-link to="/terms" class="n-link" @click.native="toggle">利用規約</nuxt-link></li>
             <li><nuxt-link to="/support" class="n-link" @click.native="toggle">サポート</nuxt-link></li>
-            <li><nuxt-link to="/room" class="n-link" @click="toggle">チャットを開始</nuxt-link></li>
+            <li><nuxt-link to="/room" class="n-link" @click.native="toggle">チャットを開始</nuxt-link></li>
             <li class="close" @click="toggle"><span>閉じる</span></li>
           </ul>
         </nav>
