@@ -25,7 +25,7 @@
         <nav class="sp-nav" v-bind:class="{toggle: Toggle}">
           <ul>
             <li>
-              <nuxt-link v-if="this.$route.path === '/'" to="#merit" class="n-link" @click="toggle">特徴</nuxt-link>
+              <nuxt-link v-if="this.$route.path === '/'" to="#merit" class="n-link" @click.native="toggle">特徴</nuxt-link>
               <nuxt-link v-else to="/" class="n-link" @click.native="toggle">特徴</nuxt-link>
             </li>
             <li><nuxt-link to="/terms" class="n-link" @click.native="toggle">利用規約</nuxt-link></li>
