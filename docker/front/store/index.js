@@ -1,3 +1,4 @@
+import firebase from "firebase";
 
 export const state = () => ({
   authUser: null
@@ -55,6 +56,10 @@ export const actions = {
     }
 
     commit('SET_USER', { authUser, claims })
+  },
+
+  async refreshToken() {
+
   }
 }
 

@@ -45,8 +45,11 @@ func Auth() fiber.Handler {
 		token, err := auth.VerifyIDToken(context.Background(), tokenString)
 		if err != nil {
 			log.Printf("error verifying ID token: %v\n", err)
-			unauthorized(c)
-			return err
+			c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
+				"error": http.StatusText(http.StatusUnauthorized),
+				"message": "Token has expired",
+			})
+			return nil
 		}
 
 		log.Printf("Verifield ID token %v\n", token)
