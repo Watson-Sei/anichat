@@ -41,7 +41,7 @@
             <h3>いっしょに、</h3>
             <h1>リアタイの感想を共有しよう！</h1>
             <p>AniChatは、地上波放送などのアニメの視聴感想をリアルタイムで発信できるチャットサービスです</p>
-            <nuxt-link to="#" class="btn-gradient-radius n-link">チャットを開始</nuxt-link>
+            <nuxt-link to="/room" class="btn-gradient-radius n-link">チャットを開始</nuxt-link>
           </div>
           <div class="catch-sub-box">
             <img src="../static/img/header-chat.svg">
