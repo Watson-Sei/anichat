@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import firebase from 'firebase'
 
 export default {
   layout: 'default',
@@ -21,12 +22,23 @@ export default {
     async signInWithGoogle() {
       const provider = new this.$fireModule.default.auth.GoogleAuthProvider();
       await this.$fire.auth.signInWithPopup(provider).then(res => {
+
+        // User Register
+        this.userRegister(res.user)
+
         res.user.getIdToken(true).then(idToken => {
           localStorage.setItem('access_token', idToken.toString())
           localStorage.setItem('refresh_token', res.user.refreshToken.toString())
         })
       })
       console.log('成功しました')
+    },
+    userRegister(user) {
+      firebase.database().ref("users/" + user.uid).set({
+        displayName: user.displayName,
+        email: user.email,
+        profile_picture: user.photoURL,
+      });
     }
   }
 }

@@ -1,9 +1,9 @@
 <template>
   <v-container>
-    <v-row style="height: 200px;" justify="center" align-content="center">
-      <v-col class="ma-9" cols="6">
+    <v-row class="search-box" style="margin: auto" justify="center" align-content="center">
+      <v-col>
         <v-text-field
-          class="pa-4"
+          class="pa-2"
           v-model="search"
           label="タイトル検索"
           type="text"
@@ -15,7 +15,7 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-card max-width="500px" v-for="(item, index) in dataset.rooms" :key="index" class="ma-2">
+      <v-card v-for="(item, index) in dataset.rooms" :key="index" class="ma-2 card-w">
         <v-row>
           <v-col cols="4">
             <v-img :src="item.img" />
@@ -72,4 +72,15 @@ export default {
 </script>
 
 <style scoped>
+.card-w {
+  max-width: 500px;
+}
+.search-box {
+  max-width: 800px;
+}
+@media screen and (max-width: 540px) {
+  .card-w {
+    max-width: 350px;
+  }
+}
 </style>
