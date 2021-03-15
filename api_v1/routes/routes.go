@@ -19,7 +19,7 @@ func SetupRouter(app *fiber.App) {
 
 	admin := app.Group("/admin")
 
-	admin.Use(firebase.Auth())
+	admin.Use(firebase.AuthAdmin())
 
 	// User management Routes
 	admin.Get("/users", controllers.GetUsers)
