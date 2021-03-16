@@ -15,7 +15,7 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-card v-for="(item, index) in dataset.rooms" :key="index" class="ma-2 card-w">
+      <v-card v-for="(item, index) in dataset.searchrooms" :key="index" class="ma-2 card-w">
         <v-row>
           <v-col cols="4">
             <v-img :src="item.img" />
@@ -49,13 +49,33 @@ export default {
     return {
       search: '',
       dataset: {
-        rooms: []
+        defaultrooms: [],
+        searchrooms: [],
       }
     }
   },
   methods: {
     letsearch () {
       console.log(this.search)
+      if (this.search === "") {
+        console.log("検索内容は空です")
+        this.dataset.searchrooms = this.dataset.defaultrooms
+      } else {
+        if (this.dataset.defaultrooms.length !== null) {
+          console.log("配列データはあります。")
+          let reset = []
+         this.dataset.defaultrooms.forEach((elem, index) => {
+           if (elem.title.includes(this.search)) {
+             reset.push(elem)
+           }
+         })
+          if (!reset) {
+            this.dataset.searchrooms = this.dataset.defaultrooms
+          } else {
+            this.dataset.searchrooms = reset
+          }
+        }
+      }
     },
     returnChat (val) {
       const path = `/room/${val}/`
@@ -65,7 +85,8 @@ export default {
   mounted() {
     axios.get("http://localhost/api/rooms")
     .then((response) => {
-      this.dataset.rooms = response.data.data
+      this.dataset.defaultrooms = response.data.data
+      this.dataset.searchrooms = response.data.data
     })
   }
 }
