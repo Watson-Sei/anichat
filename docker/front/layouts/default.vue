@@ -57,16 +57,15 @@
         <div class="menu">
           <h3>AniChatについて</h3>
           <ul class="foot">
-            <li><a href="#">開発者詳細</a></li>
-            <li><a href="#">Twitter</a></li>
-            <li><a href="#">利用規約</a></li>
+            <li><a href="https://twitter.com/watson_sei">開発者情報</a></li>
+            <li><nuxt-link class="n-link" to="/terms">利用規約</nuxt-link></li>
+            <li><nuxt-link class="n-link" to="/policy">プライバシーポリシー</nuxt-link></li>
           </ul>
         </div>
         <div class="menu">
           <h3>サポート</h3>
           <ul class="foot">
-            <li><a href="#">ヘルプセンター</a></li>
-            <li><a href="#">コミュニティ</a></li>
+            <li><nuxt-link class="n-link" to="/support">ヘルプセンター</nuxt-link></li>
           </ul>
         </div>
       </div>
