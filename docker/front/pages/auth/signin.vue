@@ -6,7 +6,7 @@
       <button @click="signInWithGoogle" class="social-button" id="google-connect"> <span>Connect with Google</span></button>
       <button href="#" class="social-button" id="twitter-connect"> <span>Connect with Twitter</span></button>
       <p class="text-xs pt-6">
-        上記ボタンのクリックにより、<a href="#" class="underlined-part">利用規約</a> 及び<br/> <a href="#" class="underlined-part">個人情報の取り扱い</a> に関する要項に同意したものとします。
+        上記ボタンのクリックにより、<a href="/terms" class="underlined-part">利用規約</a> 及び<br/> <a href="/policy" class="underlined-part">個人情報の取り扱い</a> に関する要項に同意したものとします。
       </p>
     </div>
   </div>
