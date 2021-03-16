@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="card-box">
-      <a href="#">
+      <a href="https://www.notion.so/AniChat-02e4e5e46f154f558d0334b4b1371120">
         <div class="card">
           <div class="card-img">
             <img src="../static/img/beginner.svg">

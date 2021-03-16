@@ -15,7 +15,7 @@
             <li><nuxt-link to="/support" class="n-link">サポート</nuxt-link></li>
             <li>
               <nuxt-link v-if="this.$store.getters['isLoggedIn']" to="/room" class="n-link btn-gradient-radius">チャットを開始</nuxt-link>
-              <nuxt-link v-else to="/auth/signin" class="n-link btn-gradient-radius">ログイン</nuxt-link>
+              <nuxt-link v-else to="/auth/signin" class="n-link btn-gradient-radius" @click.native="toggle">ログイン</nuxt-link>
             </li>
           </ul>
         </nav>
@@ -25,12 +25,12 @@
         <nav class="sp-nav" v-bind:class="{toggle: Toggle}">
           <ul>
             <li>
-              <nuxt-link v-if="this.$route.path === '/'" to="#merit" class="n-link" @click="toggle">特徴</nuxt-link>
+              <nuxt-link v-if="this.$route.path === '/'" to="#merit" class="n-link" @click.native="toggle">特徴</nuxt-link>
               <nuxt-link v-else to="/" class="n-link" @click.native="toggle">特徴</nuxt-link>
             </li>
             <li><nuxt-link to="/terms" class="n-link" @click.native="toggle">利用規約</nuxt-link></li>
             <li><nuxt-link to="/support" class="n-link" @click.native="toggle">サポート</nuxt-link></li>
-            <li><nuxt-link to="/room" class="n-link" @click="toggle">チャットを開始</nuxt-link></li>
+            <li><nuxt-link to="/room" class="n-link" @click.native="toggle">チャットを開始</nuxt-link></li>
             <li class="close" @click="toggle"><span>閉じる</span></li>
           </ul>
         </nav>
@@ -41,7 +41,7 @@
             <h3>いっしょに、</h3>
             <h1>リアタイの感想を共有しよう！</h1>
             <p>AniChatは、地上波放送などのアニメの視聴感想をリアルタイムで発信できるチャットサービスです</p>
-            <nuxt-link to="#" class="btn-gradient-radius n-link">チャットを開始</nuxt-link>
+            <nuxt-link to="/room" class="btn-gradient-radius n-link">チャットを開始</nuxt-link>
           </div>
           <div class="catch-sub-box">
             <img src="../static/img/header-chat.svg">
@@ -57,16 +57,15 @@
         <div class="menu">
           <h3>AniChatについて</h3>
           <ul class="foot">
-            <li><a href="#">開発者詳細</a></li>
-            <li><a href="#">Twitter</a></li>
-            <li><a href="#">利用規約</a></li>
+            <li><a href="https://twitter.com/watson_sei">開発者情報</a></li>
+            <li><nuxt-link class="n-link" to="/terms">利用規約</nuxt-link></li>
+            <li><nuxt-link class="n-link" to="/policy">プライバシーポリシー</nuxt-link></li>
           </ul>
         </div>
         <div class="menu">
           <h3>サポート</h3>
           <ul class="foot">
-            <li><a href="#">ヘルプセンター</a></li>
-            <li><a href="#">コミュニティ</a></li>
+            <li><nuxt-link class="n-link" to="/support">ヘルプセンター</nuxt-link></li>
           </ul>
         </div>
       </div>

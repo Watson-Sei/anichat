@@ -1,3 +1,4 @@
+import firebase from "firebase";
 
 export const state = () => ({
   authUser: null
@@ -55,7 +56,7 @@ export const actions = {
     }
 
     commit('SET_USER', { authUser, claims })
-  }
+  },
 }
 
 export const mutations = {
@@ -71,5 +72,9 @@ export const mutations = {
       photoURL: claims.picture,
       isAdmin: claims.admin
     }
+  },
+  UPDATE_USER(state, payload) {
+    state.authUser.displayName = payload.displayName
+    state.authUser.email = payload.email
   }
 }

@@ -18,7 +18,7 @@ export default {
     this.GetUsers()
   },
   methods: {
-    GetUsers() {
+    GetUsers(key, value) {
       this.$axios.get("http://localhost/api/admin/users", {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`
