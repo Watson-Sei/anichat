@@ -65,11 +65,15 @@ export default {
           console.log("配列データはあります。")
           let reset = []
          this.dataset.defaultrooms.forEach((elem, index) => {
-           if (elem.title == this.search) {
+           if (elem.title.includes(this.search)) {
              reset.push(elem)
            }
          })
-          this.dataset.searchrooms = reset
+          if (!reset) {
+            this.dataset.searchrooms = this.dataset.defaultrooms
+          } else {
+            this.dataset.searchrooms = reset
+          }
         }
       }
     },
