@@ -2,10 +2,10 @@
 .DS_Store
 
 #Most important confidential information
-./docker/db/.env
+docker/db/.env
 
 # enviroment file
-./docker/front/config
+docker/front/config
 
 <<<<<<< HEAD
 docker/db/data
