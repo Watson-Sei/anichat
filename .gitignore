@@ -1,6 +1,8 @@
 .idea
 .DS_Store
 
+*.swp
+
 #Most important confidential information
 docker/db/.env
 
