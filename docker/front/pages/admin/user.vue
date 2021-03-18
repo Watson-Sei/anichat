@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     GetUsers(key, value) {
-      this.$axios.get("http://localhost/api/admin/users", {
+      this.$axios.get(`${process.env.API_URL}/admin/users`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }

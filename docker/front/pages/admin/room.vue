@@ -22,13 +22,13 @@ export default {
   },
   methods: {
     GetRooms() {
-      axios.get("http://localhost/api/rooms")
+      axios.get(`${process.env.API_URL}/rooms`)
       .then((response) => {
         this.rooms = response.data.data
       })
     },
     DeleteRoom(id) {
-      axios.delete(`http://localhost/api/admin/rooms/${id}`, {
+      axios.delete(`${process.env.API_URL}/admin/rooms/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }

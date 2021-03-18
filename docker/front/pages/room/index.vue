@@ -83,7 +83,7 @@ export default {
     }
   },
   mounted() {
-    axios.get("http://localhost/api/rooms")
+    axios.get(`${process.env.BASE_URL}/api/rooms`)
     .then((response) => {
       this.dataset.defaultrooms = response.data.data
       this.dataset.searchrooms = response.data.data
