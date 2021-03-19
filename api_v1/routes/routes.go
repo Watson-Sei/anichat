@@ -17,6 +17,8 @@ func SetupRouter(app *fiber.App) {
 		AllowOrigins: fmt.Sprintf("%s,%s", os.Getenv("AllowOrigin1"), os.Getenv("AllowOrigin2")),
 	}))
 
+	//app.Use(firebase.Auth())
+
 	app.Get("/rooms", controllers.GetAllRooms)
 
 	admin := app.Group("/admin")

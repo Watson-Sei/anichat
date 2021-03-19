@@ -83,7 +83,11 @@ export default {
     }
   },
   mounted() {
-    axios.get(`${process.env.BASE_URL}/api/rooms`)
+    axios.get(`${process.env.API_URL}/rooms`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      }
+    })
     .then((response) => {
       this.dataset.defaultrooms = response.data.data
       this.dataset.searchrooms = response.data.data

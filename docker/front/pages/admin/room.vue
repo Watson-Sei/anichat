@@ -25,6 +25,8 @@ export default {
       axios.get(`${process.env.API_URL}/rooms`)
       .then((response) => {
         this.rooms = response.data.data
+      }).catch((error) => {
+        console.log(error)
       })
     },
     DeleteRoom(id) {

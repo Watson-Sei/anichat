@@ -248,9 +248,10 @@ func (h *hub) run() {
 						log.Println("write error:", err)
 
 						delete(connections, m.conn)
-						if len(connections) == 0 {
-							delete(h.rooms, m.room)
-						}
+						// ０人になるとチャンネルが閉じてしまうので不都合です。
+						//if len(connections) == 0 {
+						//	delete(h.rooms, m.room)
+						//}
 					}
 
 					// 本人以外
