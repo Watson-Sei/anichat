@@ -193,7 +193,7 @@ export default {
           displayName: this.editedItem.displayName,
           email: this.editedItem.email
         }
-        axios.put("http://localhost/api/admin/users", data, {
+        axios.put(`${process.env.API_URL}/admin/users`, data, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
           }

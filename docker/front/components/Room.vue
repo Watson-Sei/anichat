@@ -240,7 +240,7 @@ export default {
           time: this.editedItem.time,
           public: this.editedItem.public
         }
-        axios.put(`http://localhost/api/admin/rooms/${this.editedItem.id}`, data, {
+        axios.put(`${process.env.API_URL}/admin/rooms/${this.editedItem.id}`, data, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
           }
@@ -257,7 +257,7 @@ export default {
           img: this.editedItem.img,
           public: this.editedItem.public
         }
-        axios.post("http://localhost/api/admin/rooms", data, {
+        axios.post(`${process.env.API_URL}/admin/rooms`, data, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
           }
