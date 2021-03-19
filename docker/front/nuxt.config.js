@@ -1,7 +1,7 @@
 const enviroment = process.env.NODE_ENV
 console.log(enviroment)
 require('dotenv').config({path: `config/.env.${enviroment}`})
-const { API_URL, API_URL_BROWSER, BASE_URL, apiKey } = process.env;
+const { API_URL, BASE_URL, apiKey } = process.env;
 
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
@@ -98,7 +98,6 @@ export default {
   },
   env: {
     API_URL,
-    API_URL_BROWSER,
     BASE_URL,
     apiKey,
   }
