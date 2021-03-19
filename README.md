@@ -52,3 +52,13 @@ $ docker system prune
 // build image cache
 $ docker-compose -f docker-compose.development.yml build --no-cache
 ```
+
+## セットアップ Production(本番環境)
+
+### フロントエンド
+```shell
+// build
+$ yarn build
+// system up -d 
+$ docker-compose -f docker-compose.production.yml up -d --build
+```
