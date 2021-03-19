@@ -47,7 +47,7 @@ export default {
   },
   data() {
     return {
-      socket: new W3CWebSocket(`ws://${process.env.API_URL}/ws/${this.$route.params.roomId}`),
+      socket: new W3CWebSocket(`ws://${process.env.WebSocket_URL}/ws/${this.$route.params.roomId}`),
       // 送信するメッセージ
       message: '',
       // 受信したメッセージ
