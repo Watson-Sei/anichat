@@ -6,7 +6,7 @@ const { API_URL, BASE_URL, WebSocket_URL, apiKey } = process.env;
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'front',
+    title: 'AniChat - チャットアプリ ',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -14,6 +14,7 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'apple-touch-icon', type: 'image/x-icon', href: './apple-touch-icon.png'},
     ]
   },
 
