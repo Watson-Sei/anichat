@@ -1,50 +1,85 @@
-package main
+package  main
 
 import (
+	"flag"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
+	"github.com/Watson-Sei/anichat/spider/bot"
 	"log"
-	"net/http"
-	"strings"
+	"os"
 	"time"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-func main()  {
-	day := time.Now()
-	const layout = "20060102"
+var (
+	DBConn   *gorm.DB
+	user     = os.Getenv("MYSQL_USER")
+	password = os.Getenv("MYSQL_PASSWORD")
+	host     = os.Getenv("MYSQL_HOST")
+	dbname   = os.Getenv("MYSQL_DATABASE")
+)
 
-	url := fmt.Sprintf("https://anime.eiga.com/tv/q/?b=2&d=%s&p=13", day.Format(layout))
-
-	res, err := http.Get(url)
+func Connect() (err error) {
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local", user, password, host, dbname)
+	DBConn, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Println(err)
+		return err
 	}
-	defer res.Body.Close()
 
-	// NewDocumentFromReader
-	// https://pkg.go.dev/github.com/PuerkitoBio/goquery#NewDocumentFromReader
-	doc, _ := goquery.NewDocumentFromReader(res.Body)
+	sqlDB, err := DBConn.DB()
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(50)
+	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	// アニメ・声優 番組表（テレビ番組）Find The Title
-	fmt.Println(doc.Find(".headTtlL").Text())
+	return nil
+}
 
-	// 最新日付の情報を取得します。
-	doc.Find(".dayProgram").Each(func(i int, s *goquery.Selection) {
-		//
-		s.Find("li").Each(func(i1 int, s1 *goquery.Selection) {
-			if s1.Find(".tvScheTime").Text() != "" {
-				// アニメのタイトル（テキスト）
-				fmt.Printf("Title: %s \n ", s1.Find(".tvScheTtl").Text())
-				// アニメの開始と終了時間(テキスト)
-				fmt.Printf("Time: %s \n", s1.Find(".tvScheTime").Text())
-				// アニメのイメージリンク（テキスト）
-				s1.Find("img").Each(func(_ int, s *goquery.Selection) {
-					url, _ := s.Attr("src")
-					if strings.Contains(url, "jpg") {
-						fmt.Printf("Img: %s \n", url)
-					}
-				})
-			}
-		})
-	})
+func main() {
+	var (
+		mode    = flag.Int("mode", 0, "mode")
+		process = flag.Int("p", 0, "process mode")
+		id      = flag.Int("id", 0, "primary_key id")
+	)
+	flag.Parse()
+	switch *mode {
+	case 0:
+		fmt.Println("デフォルトです")
+	case 1:
+		fmt.Println("スクレイピンです")
+		if err := Connect(); err != nil {
+			log.Panic("Can't connect database: ", err.Error())
+		}
+		bot.Scraping(DBConn)
+		fmt.Println("スクレイピングが終了しました。")
+	case 2:
+		fmt.Println("cronコントローラーです")
+		if err := Connect(); err != nil {
+			log.Panic("Can't connect database: ", err.Error())
+		}
+		var room bot.Room
+		switch *process {
+		case 0:
+			fmt.Println("処理プロセスを定義してください。")
+		case 1:
+			fmt.Println("Start Chat Cron!!")
+			DBConn.Where("ID = ?", *id).First(&room)
+			room.Public = true
+			DBConn.Save(&room)
+		case 2:
+			fmt.Println("Finish Chat Cron!!")
+			DBConn.Where("ID = ?", *id).First(&room)
+			room.Public = false
+			DBConn.Save(&room)
+		}
+	case 3:
+		fmt.Println("削除コマンドテスト")
+		if err := Connect(); err != nil {
+			log.Panic("Can't connect database: ", err.Error())
+		}
+		DBConn.Where("Public = ?", false).Delete(&bot.Room{})
+		log.Println("DBテーブルを初期化しました")
+	}
+
+	fmt.Println("コマンド完了")
 }
