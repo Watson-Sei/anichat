@@ -70,3 +70,18 @@ services:
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
 
+    # Bot
+    spider:
+      build:
+        context: .
+        dockerfile: ./docker/spider/Dockerfile
+      volumes:
+        - ./spider:/go/src/spider
+      tty: true
+      env_file:
+        - ./docker/db/.env
+      depends_on:
+        - nginx
+      environment:
+        MYSQL_HOST: dockerMySQL
+
