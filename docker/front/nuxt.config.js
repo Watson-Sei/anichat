@@ -6,14 +6,22 @@ const { API_URL, BASE_URL, WebSocket_URL, apiKey } = process.env;
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'front',
+    title: 'AniChat - チャットアプリ ',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' }
+      { hid: 'description', name: 'description', content: 'AniChatは、地上波放送などのアニメの視聴感想をリアルタイムで発信できるチャットサービスです。' },
+      { hid: 'keywords', name: 'keywords', content: 'アニメチャット,AniChat,アニメ,チャット'},
+      { hid: 'og:site_name', property: 'og:site_name', content: 'AniChat'},
+      { hid: 'og:type', property: 'og:type', content: 'website'},
+      { hid: 'og:url', property: 'og:url', content: 'https://www.anichat.jp'},
+      { hid: 'og:title', property: 'og:title', content: 'AniChat'},
+      { hid: 'og:description', property: 'og:description', content: 'AniChatは、地上波放送などのアニメの視聴感想をリアルタイムで発信できるチャットサービスです。'},
+      { hid: 'og:image', property: 'og:image', content: 'https://media.discordapp.net/attachments/616249287030079488/825360800763478016/anichat.png'}
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'apple-touch-icon', type: 'image/x-icon', href: './apple-touch-icon.png'},
     ]
   },
 
