@@ -4,7 +4,7 @@
     <div class="login-box">
       <h2 class="font-black">Social Login</h2>
       <button @click="signInWithGoogle" class="social-button" id="google-connect"> <span>Connect with Google</span></button>
-      <button href="#" class="social-button" id="twitter-connect"> <span>Connect with Twitter</span></button>
+      <button @click="signInWithTwitter" class="social-button" id="twitter-connect"> <span>Connect with Twitter</span></button>
       <p class="text-xs pt-6">
         上記ボタンのクリックにより、<a href="/terms" class="underlined-part">利用規約</a> 及び<br/> <a href="/policy" class="underlined-part">個人情報の取り扱い</a> に関する要項に同意したものとします。
       </p>
@@ -29,6 +29,20 @@ export default {
         res.user.getIdToken(true).then(idToken => {
           localStorage.setItem('access_token', idToken.toString())
           localStorage.setItem('refresh_token', res.user.refreshToken.toString())
+        })
+      })
+      console.log('成功しました')
+    },
+    async signInWithTwitter() {
+      const provider = new this.$fireModule.default.auth.TwitterAuthProvider();
+      await this.$fire.auth.signInWithPopup(provider).then(res => {
+
+        // User Register
+        this.userRegister(res.user)
+
+        res.user.getIdToken(true).then(idToken => {
+          localStorage.setItem('access_token', idToken.toString())
+          localStorage.setItem('refresh_token', ref.user.refreshToken.toString())
         })
       })
       console.log('成功しました')
