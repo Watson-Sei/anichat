@@ -78,6 +78,7 @@ func main() {
 			log.Panic("Can't connect database: ", err.Error())
 		}
 		DBConn.Where("Public = ?", false).Delete(&bot.Room{})
+		DBConn.Where("Public = ?", true).Delete(&bot.Room{})
 		log.Println("DBテーブルを初期化しました")
 	}
 

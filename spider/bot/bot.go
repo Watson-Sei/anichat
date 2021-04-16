@@ -26,6 +26,7 @@ type Room struct {
 func Scraping(db *gorm.DB) {
 
 	db.Where("Public = ?", false).Delete(&Room{})
+	db.Where("Public = ?", true).Delete(&Room{})
 	log.Println("DBテーブルを初期化しました")
 
 	day := time.Now()
@@ -51,27 +52,26 @@ func Scraping(db *gorm.DB) {
 	doc.Find(".dayProgram").Each(func(i int, s *goquery.Selection) {
 		s.Find("li").Each(func(l1 int, s1 *goquery.Selection) {
 			if s1.Find(".tvScheTime").Text() != "" {
-				// アニメタイトル（String)
-				fmt.Printf("Title: %s \n", s1.Find(".tvScheTtl").Text())
-				// アニメ開始時間と終了時間(String)
-				fmt.Printf("Time: %s \n", s1.Find(".tvScheTime").Text())
-				// アニメイメージ(String)
-				s1.Find("img").Each(func(_ int, s *goquery.Selection) {
-					url, _ := s.Attr("src")
-					if strings.Contains(url, "jpg") {
-						fmt.Printf("Image: %s \n", url)
+				// アニメタイトルがあるか
+				if s1.Find(".tvScheTtl").Text() != "" {
+					// アニメイメージ
+					s1.Find("img").Each(func(_ int, s *goquery.Selection) {
+						url, _ := s.Attr("src")
+						if strings.Contains(url, "jpg") {
+							fmt.Printf("Image: %s \n", url)
 
-						// DBに追加する
-						room := Room{Title: s1.Find(".tvScheTtl").Text(), Time: s1.Find(".tvScheTime").Text(), Image: url}
-						db.Create(&room)
+							// DBに追加する
+							room := Room{Title: s1.Find(".tvScheTtl").Text(), Time: s1.Find(".tvScheTime").Text(), Image: url}
+							db.Create(&room)
 
-						// AT Command Set
-						err := plugin.Reformat(s1.Find(".tvScheTime").Text(), room.ID)
-						if err != nil {
-							panic(err)
+							// AT Command Set
+							err := plugin.Reformat(s1.Find(".tvScheTime").Text(), room.ID)
+							if err != nil {
+								panic(err)
+							}
 						}
-					}
-				})
+					})
+				}
 			}
 		})
 	})
