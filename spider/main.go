@@ -4,12 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"github.com/Watson-Sei/anichat/spider/bot"
-	"log"
-	"os"
-	"time"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
+	"os"
 )
 
 var (
@@ -26,11 +24,6 @@ func Connect() (err error) {
 	if err != nil {
 		return err
 	}
-
-	sqlDB, err := DBConn.DB()
-	sqlDB.SetMaxIdleConns(10)
-	sqlDB.SetMaxOpenConns(50)
-	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	return nil
 }
@@ -73,12 +66,12 @@ func main() {
 			DBConn.Save(&room)
 		}
 	case 3:
-		fmt.Println("削除コマンドテスト")
+		fmt.Println("削除コマンド")
 		if err := Connect(); err != nil {
 			log.Panic("Can't connect database: ", err.Error())
 		}
-		DBConn.Where("Public = ?", false).Delete(&bot.Room{})
 		DBConn.Where("Public = ?", true).Delete(&bot.Room{})
+		DBConn.Where("Public = ?", false).Delete(&bot.Room{})
 		log.Println("DBテーブルを初期化しました")
 	}
 

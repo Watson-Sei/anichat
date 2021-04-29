@@ -5,10 +5,8 @@ import (
 	"github.com/Watson-Sei/anichat/spider/plugin"
 	"log"
 	"net/http"
-	"strings"
 	"time"
-
-	//"time"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"gorm.io/gorm"
@@ -25,9 +23,11 @@ type Room struct {
 
 func Scraping(db *gorm.DB) {
 
-	db.Where("Public = ?", false).Delete(&Room{})
-	db.Where("Public = ?", true).Delete(&Room{})
-	log.Println("DBテーブルを初期化しました")
+	dbInitialize(db)
+
+	//db.Where("Public = ?", false).Delete(&Room{})
+	//db.Where("Public = ?", true).Delete(&Room{})
+	//log.Println("DBテーブルを初期化しました")
 
 	day := time.Now()
 	const layout = "20060102"
@@ -75,4 +75,10 @@ func Scraping(db *gorm.DB) {
 			}
 		})
 	})
+}
+
+func dbInitialize(db *gorm.DB)  {
+	db.Where("Public = ?", true).Delete(&Room{})
+	db.Where("Public = ?", false).Delete(&Room{})
+	log.Printf("番組DBを初期化しました。")
 }

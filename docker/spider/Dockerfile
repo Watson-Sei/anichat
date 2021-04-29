@@ -23,8 +23,8 @@ RUN apk update \
     && apk add openrc \
     && openrc boot
 
-RUN (crontab -l; echo "*       6       *       *       *       cd /go/src/spider && pwd && ls && go run main.go -mode 1") | crontab -
+RUN (crontab -l; echo "0       6       *       *       *       cd /go/src/spider && pwd && ls && go run main.go -mode 1") | crontab -
 
-COPY ./docker/spider/startup.sh /startup.sh
-RUN chmod 744 /startup.sh
-CMD ["/startup.sh"]
+#COPY ./docker/spider/startup.sh /startup.sh
+#RUN chmod 744 /startup.sh
+#CMD ["/startup.sh"]
