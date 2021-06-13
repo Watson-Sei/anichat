@@ -1,6 +1,11 @@
 # anichat
 リアタイアニメチャット
 
+![5c9544db-c750-42fc-a4c1-d1d74cef769f](https://user-images.githubusercontent.com/55475145/121808068-e76df780-cc91-11eb-8d2e-07c79dbfa222.png)
+
+![6abb244f-e56c-48bb-9d9d-d8a4006f4615](https://user-images.githubusercontent.com/55475145/121808090-f81e6d80-cc91-11eb-85fc-4992c3510527.png)
+
+
 ## 技術選定
 
 - fiber - golang
